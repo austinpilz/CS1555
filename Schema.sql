@@ -49,7 +49,7 @@ CREATE TABLE Flight (
   Arrival_Time varchar2(4),
   Weekly_Schedule varchar2(7),
   Constraint flight_PK primary key (Flight_Number) deferrable,
-  Constraint flight_FK1 foreign key (Plane_Type) references Plane(Plane_Type) initially deferred deferrable,
+  Constraint flight_FK1 foreign key (Plane_Type, Airline_ID) references Plane(Plane_Type, Owner_ID) initially deferred deferrable,
   Constraint flight_FK2 foreign key (Airline_ID) references Airline(Airline_ID) initially deferred deferrable,
   CONSTRAINT flight_CS CHECK (Departure_Time < Arrival_Time));
   
@@ -170,10 +170,15 @@ then the plane for that flight should be switched to the smaller-capacity plane.
 
 /* --- Functions --- */
 
+SELECT * FROM Airline;
+
+INSERT INTO AIRLINE VALUES ('911', 'American Airlines', 'AA', 1900);
+
 /* 1 - Erase the database - */
-CREATE OR REPLACE FUNCTION eraseDatabase IS
+CREATE OR REPLACE PROCEDURE eraseDatabase IS
 BEGIN
-  TRUNCATE TABLE Airline;
+  execute immediate 'TRUNCATE TABLE Airline';
+  /*
   TRUNCATE TABLE Plane;
   TRUNCATE TABLE Flight;
   TRUNCATE TABLE Price;
@@ -181,6 +186,7 @@ BEGIN
   TRUNCATE TABLE Reservation;
   TRUNCATE TABLE Reservation_Detail;
   TRUNCATE TABLE PDate;
+  */
 END;
 /
 
@@ -226,5 +232,16 @@ Print the passenger list (salutation, first name, last name).*/
 
 /* 16 - Buy Ticket */
 /* Purchase a ticken from an existing reservation, given reservation number */
+
+/* DROP TABLE COMMANDS */
+
+DROP TABLE Plane;
+DROP TABLE Flight;
+DROP TABLE Price;
+DROP TABLE Customer;
+DROP TABLE Reservation;
+DROP TABLE Reservation_Detail;
+DROP TABLE PDate;
+DROP TABLE AIRLINE;
 
 
