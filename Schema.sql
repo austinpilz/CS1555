@@ -169,24 +169,18 @@ then the plane for that flight should be switched to the smaller-capacity plane.
 
 
 /* --- Functions --- */
-
-SELECT * FROM Airline;
-
-INSERT INTO AIRLINE VALUES ('911', 'American Airlines', 'AA', 1900);
-
-/* 1 - Erase the database - */
+/* 1 - Erase the database - Usage: EXECUTE eraseDatabase;*/
 CREATE OR REPLACE PROCEDURE eraseDatabase IS
 BEGIN
-  execute immediate 'TRUNCATE TABLE Airline';
-  /*
-  TRUNCATE TABLE Plane;
-  TRUNCATE TABLE Flight;
-  TRUNCATE TABLE Price;
-  TRUNCATE TABLE Customer;
-  TRUNCATE TABLE Reservation;
-  TRUNCATE TABLE Reservation_Detail;
-  TRUNCATE TABLE PDate;
-  */
+  DELETE FROM Reservation_Detail;
+  DELETE FROM Reservation;
+  DELETE FROM Price;
+  DELETE FROM Customer;
+  DELETE FROM Flight;
+  DELETE FROM Plane;
+  DELETE FROM Airline;
+  DELETE FROM PDate;
+  COMMIT;
 END;
 /
 
