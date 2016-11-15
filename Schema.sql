@@ -167,7 +167,6 @@ For simplicity, we assume that there are always available planes for a switch to
 then the plane for that flight should be switched to the smaller-capacity plane. */
 
 
-
 /* --- Functions --- */
 /* 1 - Erase the database - Usage: EXECUTE eraseDatabase;*/
 CREATE OR REPLACE PROCEDURE eraseDatabase IS
