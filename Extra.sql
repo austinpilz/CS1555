@@ -18,4 +18,7 @@ SELECT Plane.Plane_Type, Plane.Manufacture, Airline.Airline_Name FROM PLANE
 INNER JOIN Airline
 ON Plane.Owner_ID = Airline.Airline_ID;
 
+/* Verify example customer # matches project requirements */
+SELECT COUNT(*) FROM CUSTOMER;
+
 

@@ -3,6 +3,17 @@
 /* Team 19 */
 /* Database Schema Creation Script */
 
+
+/* TODO: 
+When adding a Frequent flier airline ID to customer, it should ensure that the ID is a valid airline ID
+
+Credit card # needs to be exactly 16 characters long
+
+*/
+
+
+
+
 /* TABLE: Airline */
 /* Airline(airline id, airline name, airline abbreviation, year founded) */
 
@@ -93,6 +104,9 @@ CREATE TABLE Customer (
   Email varchar2(30),
   Frequent_Miles varchar2(5),
   Constraint customer_PK primary key (cid) deferrable);
+
+/* Assumptions: When adding a Frequent flier airline ID to customer, it should ensure that the ID is a valid airline ID
+The credit card expiration date can be previous to when we are entering row in the case of data restores or record keeping purposes, thus no constraint.*/
   
   
 /* TABLE: Reservation */
