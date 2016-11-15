@@ -1,4 +1,6 @@
 /* Austin Pilz */
+/* Alisha Forrest */
+/* Team 19 */
 /* Database Schema Creation Script */
 
 /* TABLE: Airline */
@@ -26,7 +28,7 @@ CREATE TABLE Plane (
   Last_Service DATE,
   Year int,
   Owner_ID varchar2(5),
-  Constraint plane_PK primary key (Plane_Type) deferrable,
+  Constraint plane_PK primary key (Plane_Type, Owner_ID) deferrable,
   Constraint plane_FK foreign key (Owner_ID) references Airline( Airline_ID ) initially deferred deferrable);
   
   /* The "Plane_Type" field is essentially the plane's name (ex B712), hence PK */
@@ -99,6 +101,8 @@ CREATE TABLE Customer (
 
 CREATE TABLE Reservation (
   Reservation_Number varchar2(5),
+  Start_City varchar2(3),
+  End_City varchar2(3),
   CID varchar2(9),
   cost int,
   Credit_Card_Num varchar2(16),
@@ -177,7 +181,8 @@ BEGIN
   TRUNCATE TABLE Reservation;
   TRUNCATE TABLE Reservation_Detail;
   TRUNCATE TABLE PDate;
-END
+END;
+/
 
 /* 2 - Load airline information */
 
