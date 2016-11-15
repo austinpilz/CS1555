@@ -1,5 +1,5 @@
 /* --- Example Data --- */
-/* Generate the data to represent at least 200 users, 300 reservations, 100 flights. */
+/* Generate the data to represent at least 300 reservations, 100 flights. */
 
 /* 10 Airlines*/
 INSERT INTO AIRLINE VALUES ('1', 'Alaska', 'AS', 1926);
