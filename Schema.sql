@@ -225,16 +225,3 @@ Print the passenger list (salutation, first name, last name).*/
 
 /* 16 - Buy Ticket */
 /* Purchase a ticken from an existing reservation, given reservation number */
-
-/* DROP TABLE COMMANDS */
-
-DROP TABLE Plane;
-DROP TABLE Flight;
-DROP TABLE Price;
-DROP TABLE Customer;
-DROP TABLE Reservation;
-DROP TABLE Reservation_Detail;
-DROP TABLE PDate;
-DROP TABLE AIRLINE;
-
-
