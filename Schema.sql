@@ -246,14 +246,42 @@ BEGIN
 END;
 /
 
+--stored procedure for downsizing the plane
+--input: the flight number
+--description
+--	count the number of reservations
+--	find the owner and plane type of the plane
+--	use findPlane to see if there is a smaller plane
+--	if there is a smaller plane != to current plane, update plane
+CREATE OR REPLACE PROCEDURE planeDownsize(flightNum in varchar)
+AS
+	numReserved int;
+	planeType varchar2(4);
+	currentPlane varchar2(4);
+	planeOwner varchar2(5);
+BEGIN
+	select count(reservation_number) into numReserved from reservation_detail where flightNum = flight_number;
+	select owner_id, plane_type into planeOwner, currentPlane from (flight natural join plane) where flight_number = flightNum;
+	planeType := findPlane(numReserved,planeOwner);
+	if planeType IS NOT NULL AND planeType <> currentPlane then
+		updatePlane(flightNum, planeType);
+	end if;
+END;
+/
+
 --TRIGGER 3
 /* cancels(deletes)all non-ticketed reservations for a flight, 12 hours prior the flight 
 (i.e., 12 hours before the flight is scheduled to depart) and if the number of ticketed passengers fits in a smaller capacity plane, 
 then the plane for that flight should be switched to the smaller-capacity plane. */
 CREATE OR REPLACE TRIGGER cancelReservation 
-AFTER UPDATE ON PDate
+BEFORE UPDATE ON PDate
 FOR EACH ROW
 BEGIN
 	deleteReservations(:new.C_Date);
+	--loop through the distinct flights to calculate whether plane should downsize or not
+	for i in (select distinct flight_number from reservation_detail)
+	loop
+		planeDownsize(i.flight_number);
+	end loop;
 END;
 /
