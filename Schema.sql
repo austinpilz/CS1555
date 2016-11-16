@@ -156,10 +156,6 @@ CREATE TABLE PDate (
 /*
   Create a function that will go through a reservation's flights and calculate it's total price.
   For this trigger, when one of the price entries is updated, just call the method on the reservation(s) affected
-  
-  
-  Price (Arrival City, Departure City) -> Flight (Arrival City, Departure City) -> Flight # -> Reservation_Detail to see if it's a leg? -> Reservation Cost
-
 */
 
 
@@ -167,10 +163,10 @@ CREATE TABLE PDate (
 /* Trigger 2 - planeUpgrade */
 
 --function for finding a bigger plane
-CREATE OR REPLACE FUNCTION findBiggerPlane(numReserved in int,planeOwner in varchar2) 
+CREATE OR REPLACE FUNCTION findPlane(numReserved in int,planeOwner in varchar2) 
 return varchar2 is
 anyPlanes int;
-biggerPlane varchar2(4);
+newPlane varchar2(4);
 begin
 	--find how many planes are bigger than the current plane
 	select count(plane_type) into anyPlanes from plane where owner_id = planeOwner and plane_capacity > numReserved;
@@ -178,8 +174,8 @@ begin
 		return NULL; --if there aren't any more planes
 	else
 		--get the next biggest plane that is owned by the airline offering the flight
-		select plane_type into biggerPlane from plane where owner_id = planeOwner and plane_capacity = (select min(plane_capacity) from plane where owner_id = planeOwner and plane_capacity > numReserved);
-		return (biggerPlane);
+		select plane_type into newPlane from plane where owner_id = planeOwner and plane_capacity = (select min(plane_capacity) from plane where owner_id = planeOwner and plane_capacity > numReserved);
+		return (newPlane);
 	end if;
 end;
 /
@@ -206,21 +202,19 @@ DECLARE numReserved int;
 		planeOwner varchar2(5);
 BEGIN
 	--count the number of reserved seats for the current flight
+	--We assumed that we should try to accommodate all the previously reserved passengers first regardless of being ticketed yet or not
+	--i.e. a plane could be full and not all the passengers are ticketed, meaning if another passenger wants to join the plane size must increase
 	select count(reservation_number) into numReserved from reservation_detail where flight_number = (:new.Flight_Number);
 	numReserved := numReserved + 1; --add one because it is BEFORE insert, count does not account for the row we are adding
 	--get the capacity and owner of the plane
 	select plane_capacity, owner_id into planeCap, planeOwner from (flight natural join plane) where flight_number = :new.Flight_Number;
 	if (numReserved > planeCap) then --if there are more reservations than space on the flight
-		planeType := findBiggerPlane(numReserved,planeOwner); --see if a bigger plane can be found
+		planeType := findPlane(numReserved,planeOwner); --see if a bigger plane can be found
 		if planeType IS NULL then
 			update reservation set Ticketed = 'N' where reservation_number = :new.reservation_number; --if there is not a bigger plane then the person does not get a ticket
 		else
-			update reservation set Ticketed = 'Y' where reservation_number = :new.reservation_number; --if there is a plane, they do get a ticket
 			updatePlane(:new.flight_number, planeType); --update the plane to the larger size
 		end if;
-	else
-		--if there is less reservations than capacity, the person gets a ticket
-		update reservation set Ticketed = 'Y' where reservation_number = :new.reservation_number;
 	end if;
 END;
 /
