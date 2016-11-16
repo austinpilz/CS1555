@@ -133,7 +133,7 @@ CREATE TABLE Reservation_Detail (
   Flight_Number varchar2(3),
   Flight_Date date,
   Leg int,
-  Constraint reservation_detail_PK primary key (Reservation_Number) deferrable,
+  Constraint reservation_detail_PK primary key (Reservation_Number, Leg) deferrable,
   Constraint reservation_detail_FK1 foreign key (Reservation_Number) references Reservation(Reservation_number) on delete cascade initially deferred deferrable,
   Constraint reservation_detail_FK2 foreign key (Flight_Number) references Flight(Flight_Number) initially deferred deferrable);
 
@@ -213,7 +213,7 @@ DECLARE numReserved int;
 		planeOwner varchar2(5);
 BEGIN
 	--count the number of reserved seats for the current flight
-	select count(reservation_number) into numReserved from reservation_detail where flight_number = (:new.Flight_Number);
+	select count(distinct reservation_number) into numReserved from reservation_detail where flight_number = (:new.Flight_Number);
 	numReserved := numReserved + 1; --add one because it is BEFORE insert, count does not account for the row we are adding
 	--get the capacity and owner of the plane
 	select plane_capacity, owner_id into planeCap, planeOwner from (flight natural join plane) where flight_number = :new.Flight_Number;
@@ -260,7 +260,7 @@ AS
 	currentPlane varchar2(4);
 	planeOwner varchar2(5);
 BEGIN
-	select count(reservation_number) into numReserved from reservation_detail where flightNum = flight_number;
+	select count(distinct reservation_number) into numReserved from reservation_detail where flightNum = flight_number;
 	select owner_id, plane_type into planeOwner, currentPlane from (flight natural join plane) where flight_number = flightNum;
 	planeType := findPlane(numReserved,planeOwner);
 	if planeType IS NOT NULL AND planeType <> currentPlane then
