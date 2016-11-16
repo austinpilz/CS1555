@@ -193,6 +193,17 @@ when a new reservation is made on that flight and there are no available seats (
 A change of plane will fail only if the currently assigned plane for the flight is the one with the biggest capacity. 
 For simplicity, we assume that there are always available planes for a switch to succeed. */
 
+/*ASSUMPTIONS WE MADE:
+	1. When a reservation is made, if a seat is available it is saved for that user
+		-Even if they haven't been ticketed, the seat is saved
+	2. If there are no seats left on the current plane, it looks for a bigger plane
+		a. If there is a bigger plane, it updates the plane size
+		b. If there are no bigger planes, the reservation is set to not ticketed
+			-Assumes that anyone who has an actual seat reserved 
+			(i.e. the first X number of people to reserve based on reservation date) 
+			get tickets before anyone else
+*/
+
 CREATE OR REPLACE TRIGGER planeUpgrade
 BEFORE INSERT ON Reservation_Detail
 FOR EACH ROW
@@ -202,8 +213,6 @@ DECLARE numReserved int;
 		planeOwner varchar2(5);
 BEGIN
 	--count the number of reserved seats for the current flight
-	--We assumed that we should try to accommodate all the previously reserved passengers first regardless of being ticketed yet or not
-	--i.e. a plane could be full and not all the passengers are ticketed, meaning if another passenger wants to join the plane size must increase
 	select count(reservation_number) into numReserved from reservation_detail where flight_number = (:new.Flight_Number);
 	numReserved := numReserved + 1; --add one because it is BEFORE insert, count does not account for the row we are adding
 	--get the capacity and owner of the plane
