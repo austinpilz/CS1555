@@ -10,6 +10,7 @@ drop table Price cascade constraints;
 drop table Reservation cascade constraints;
 drop table Reservation_Detail cascade constraints;
 drop table PDate cascade constraints;
+drop table Customer cascade constraints;
 commit;
 
 /* TODO: 
@@ -83,7 +84,7 @@ CREATE TABLE Price (
   Airline_ID varchar2(5),
   High_Price int,
   Low_Price int,
-  Constraint price_PK primary key (Departure_City, Arrival_City) deferrable,
+  Constraint price_PK primary key (Departure_City, Arrival_City, Airline_ID) deferrable,
   Constraint price_FK foreign key (Airline_ID) references Airline(Airline_ID) initially deferred deferrable,
   Constraint price_CS CHECK (Departure_City <> Arrival_City));
   
