@@ -2,7 +2,7 @@
 /* Alisha Forrest */
 /* Team 19 */
 /* Database Schema Creation Script */
-
+commit;
 drop table Airline cascade constraints;
 drop table Plane cascade constraints;
 drop table Flight cascade constraints;
@@ -120,9 +120,9 @@ The credit card expiration date can be previous to when we are entering row in t
 
 CREATE TABLE Reservation (
   Reservation_Number varchar2(5),
+  CID varchar2(9),
   Start_City varchar2(3),
   End_City varchar2(3),
-  CID varchar2(9),
   cost int,
   Credit_Card_Num varchar2(16),
   Reservation_Date date,
@@ -168,7 +168,7 @@ CREATE OR REPLACE TRIGGER adjustTicket
 BEFORE UPDATE ON Price
 FOR EACH ROW
 BEGIN
-	for i in (select distinct Reservation_Number, Start_City, End_City from Reservation where (Start_City = :new.Departure_City AND End_City = :new.Arrival_City)) 
+	for i in (select distinct Reservation_Number, Start_City, End_City from Reservation natural join (reservation_detail natural join flight) where (Start_City = :new.Departure_City AND End_City = :new.Arrival_City AND airline_id = :new.Airline_ID)) 
 	loop
 		checkFlightPricing(i.Reservation_Number, i.Start_City, i.End_City, :new.High_Price, :new.Low_Price, :old.High_Price, :old.Low_Price);
 	end loop;
@@ -224,7 +224,7 @@ END;
 CREATE OR REPLACE TRIGGER calcPriceTicket
 AFTER INSERT ON Reservation_Detail
 BEGIN
-	for i in (select distinct Reservation_Number, Start_City, End_City from Reservation) 
+	for i in (select Reservation_Number, Start_City, End_City from Reservation) 
 	loop
 		calcFlightPricing(i.Reservation_Number, i.Start_City, i.End_City);
 	end loop;
@@ -241,22 +241,28 @@ AS
 	hpriceGO int;
 	lpriceRETURN int;
 	hpriceRETURN int;
+	airlineID varchar(5);
+	countPrice int;
 BEGIN
 	select count(leg) into countLegs from reservation natural join reservation_detail where reservation_number = RNum;
-	select low_price, high_price into lpriceGO, hpriceGO from price where departure_city = startCity and arrival_city = endCity;
-	select low_price, high_price into lpriceRETURN, hpriceRETURN from price where departure_city = endCity and arrival_city = startCity;
 	
 	for i in (select * from reservation_detail where reservation_number = RNum)
 	loop
-		select departure_city, arrival_city into flightStartCity, flightEndCity from flight natural join reservation_detail where reservation_number = RNum AND leg = i.leg;
+		select departure_city, arrival_city, airline_ID into flightStartCity, flightEndCity, airlineID from flight natural join reservation_detail where reservation_number = RNum AND leg = i.leg;
+		select count(low_price) into countPrice from price where departure_city = startCity and arrival_city = endCity and airline_id = airlineID;
+		IF countPrice > 0 then --cannot calculate price if there is not a price in the Price table for that flight
+		select low_price, high_price into lpriceGO, hpriceGO from price where departure_city = startCity and arrival_city = endCity and airline_id = airlineID;
+		
 		IF i.leg = 0 AND countLegs = 1 then
 			update Reservation set cost = hpriceGO where reservation_number = RNum; --direct flight one way
 		ELSIF i.leg = 0 AND countLegs > 1 then
 			startDate := i.flight_date;
 		ELSIF i.leg = 1 AND flightEndCity = startCity then
 			IF i.flight_date = startDate then
+				select low_price, high_price into lpriceRETURN, hpriceRETURN from price where departure_city = endCity and arrival_city = startCity and airline_id = airlineID;
 				update Reservation set cost = hpriceGO + hpriceRETURN where reservation_number = RNum; --same day go and return = high price
 			ELSE
+				select low_price, high_price into lpriceRETURN, hpriceRETURN from price where departure_city = endCity and arrival_city = startCity and airline_id = airlineID;
 				update Reservation set cost = lpriceGO + lpriceRETURN where reservation_number = RNum; --different day go and return = low price
 			end if;
 		ELSIF i.leg = 1 AND flightEndCity <> startCity then
@@ -266,16 +272,20 @@ BEGIN
 			IF i.flight_date = startDate then 
 				--low price on the way there since there is a connection
 				--high price on the way back since it is a direct flight on the way back
+				select low_price, high_price into lpriceRETURN, hpriceRETURN from price where departure_city = endCity and arrival_city = startCity and airline_id = airlineID;
 				update Reservation set cost = lpriceGO + hpriceRETURN where reservation_number = RNum;
 			ELSE
 				--low price on the way there since there is a connection
 				--low price on the way back since it is on a different day
+				select low_price, high_price into lpriceRETURN, hpriceRETURN from price where departure_city = endCity and arrival_city = startCity and airline_id = airlineID;
 				update Reservation set cost = lpriceGO + lpriceRETURN where reservation_number = RNum;
 			end if;
 		ELSIF i.leg = 2 AND flightEndCity <> startCity then
 			--low price on the way there since there is a connection
 			--low price on the way back since there is a connection
+			select low_price, high_price into lpriceRETURN, hpriceRETURN from price where departure_city = endCity and arrival_city = startCity and airline_id = airlineID;
 			update Reservation set cost = lpriceGO + lpriceRETURN where reservation_number = RNum;
+		END IF;
 		END IF;
 	end loop;
 END;
@@ -408,3 +418,4 @@ BEGIN
 	end loop;
 END;
 /
+
