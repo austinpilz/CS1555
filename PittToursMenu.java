@@ -1,0 +1,390 @@
+/*
+*Alisha Forrest - ahf5
+*Austin Pilz - anp147
+*/
+import java.sql.*; 
+import java.text.ParseException;
+import java.util.*;
+
+public class PittToursMenu
+{
+	//GLOBAL VARIABLES
+	public static Scanner keyboard = new Scanner(System.in);
+		
+	//BELOW: the db setup variable from recitation 8 (TranDemo1.java)
+	private static Connection connection; //used to hold the jdbc connection to the DB
+    private Statement statement; //used to create an instance of the connection
+    private PreparedStatement prepStatement; //used to create a prepared statement, that will be later reused
+    private ResultSet resultSet; //used to hold the result of your query (if one
+    // exists)
+    private String query;  //this will hold the query we are using
+			
+			
+	//Function: AdminPrivileges
+	//inputs: none
+	//outputs: none
+	//Description: The admin sub-menu for the overall application
+	//Based on the action the user wants to do, it routes to the correct method
+	//Will loop until user indicates exit
+	public static void AdminPrivileges()
+	{
+		int selection;
+		boolean exit = false;
+		
+		while(!exit)
+		{
+			System.out.print("Admin Menu:\n\t1) Erase the Database\n\t2) Load airline information\n\t3) Load schedule information\n\t4) Load pricing information\n\t5) Load plane information\n\t6) Generate passenger manifest for specific flight on given day\n\t7) Exit\nEnter the menu item number to continue: ");
+			selection = Integer.parseInt(keyboard.nextLine());
+			switch(selection)
+			{
+				case 1:
+					eraseDatabase();
+					break;
+				case 2:
+					loadAirline();
+					break;
+				case 3:
+					loadSchedule();
+					break;
+				case 4:
+					loadPricing();
+					break;
+				case 5:
+					loadPlaneInfo();
+					break;
+				case 6: 
+					generateManifest();
+					break;
+				case 7:
+					exit = true;
+					break;
+			}
+		}
+	}
+	
+	//Function: eraseDatabase
+	//inputs: none
+	//outputs: none
+	//Description: Truncates the tables in order to erase the database
+	public static void eraseDatabase()
+	{
+		String selection = "";
+		System.out.print("Are you sure? (y/n): ");
+		selection = keyboard.nextLine();
+		
+		if(selection.toLowerCase().Equals("y"))
+		{
+			//TO DO: DATABASE
+		}
+		else if(selection.toLowerCase().Equals("n"))
+		{
+			System.out.println("The database will remain intact.\nReturning to menu...");
+		}
+		else
+		{
+			System.out.println("ERROR: You did not enter \'y\' or \'n\'. Therefore the database will remain intact.\nReturning to menu...");
+		}
+	}
+	
+	//Function: loadAirline
+	//inputs: none
+	//outputs: none
+	//Description: Asks user for .csv file which has ariline info
+	//inserts it into the database
+	public static void loadAirline()
+	{
+		String selection = "";
+		System.out.print("Please enter the location of the .csv file: ");
+		selection = keyboard.nextLine();
+		
+		
+	}
+	
+	//Function: loadSchedule
+	//inputs: none
+	//outputs: none
+	//Description: Asks user for .csv file which has schedule info
+	//inserts it into the database
+	public static void loadSchedule()
+	{
+		String selection = "";
+		System.out.print("Please enter the location of the .csv file: ");
+		selection = keyboard.nextLine();
+	}
+	
+	//Function: loadPricing
+	//inputs: none
+	//outputs: none
+	//Description: Asks user for .csv file which has pricing info
+	//inserts it into the database
+	public static void loadPricing()
+	{
+		String selection = "";
+		System.out.print("Please enter the location of the .csv file: ");
+		selection = keyboard.nextLine();
+	}
+	
+	//Function: loadPlaneInfo
+	//inputs: none
+	//outputs: none
+	//Description: Asks user for .csv file which has plane info
+	//inserts it into the database
+	public static void loadPlaneInfo()
+	{
+		String selection = "";
+		System.out.print("Please enter the location of the .csv file: ");
+		selection = keyboard.nextLine();
+	}
+	
+	//Function: generateManifest
+	//inputs: none
+	//outputs: none
+	//Description: 
+	public static void generateManifest()
+	{
+	}
+	
+	//Function: AdminPrivileges
+	//inputs: none
+	//outputs: none
+	//Description: The admin sub-menu for the overall application
+	//Based on the action the user wants to do, it routes to the correct method
+	//Will loop until user indicates exit
+	public static void ClientPrivileges()
+	{
+		int selection;
+		boolean exit = false;
+		
+		while(!exit)
+		{
+			System.out.print("Client Menu:\n\t1) Add customer\n\t2) Show customer info, given customer name\n\t3) Find Prices for flights between two cities\n\t4) Find all routes between two cities\n\t5) Find all routes between two cities of a given airline\n\t6) Find all routes with available seats \n\tbetween two cities on a given day\n\t7) For a given airline, find all routes with available seats\n\tbetween two cities on given day\n\t8) Add reservation\n\t9) Show reservation info, given reservation number\n\t10) Buy ticket from existing reservation\n\t11) Exit\nEnter the menu item number to continue: ");
+			selection = Integer.parseInt(keyboard.nextLine());
+			switch(selection)
+			{
+				case 1:
+					addCustomer();
+					break;
+				case 2:
+					showCustomerInfo();
+					break;
+				case 3:
+					findPriceByRoute();
+					break;
+				case 4:
+					findAllRoutes();
+					break;
+				case 5:
+					findAllRoutesByAirline();
+					break;
+				case 6:
+					findAvailableSeatsByRoute();
+					break;
+				case 7: 
+					findAvailableSeatsByAirline();
+					break;
+				case 8:
+					addReservation();
+					break;
+				case 9:
+					showReservationByNumber();
+					break;
+				case 10:
+					buyTicket();
+					break;
+				case 11:
+					exit = true;
+					break;
+			}
+		}
+	}
+	
+	//Function: addCustomer
+	//inputs: none
+	//outputs: none
+	/*Description:
+	Ask the user to supply all the necessary fields for the new customer: salutation (Mr/Mrs/Ms),
+	first name, last name, address (street, city, state), phone number, email address, credit card
+	number, credit card expiration date. Your program must print the appropriate prompts so
+	that the user supplies the information one field at a time.
+	Produce an error message if a customer with the same last and first name already exists.
+	Assign a unique PittRewards number (i.e., Cid) for the new user.
+	Insert all the supplied information and the PittRewards number into the database.
+	Display the PittRewards number as a confirmation of successfully adding the new customer
+	in the database*/
+	public static void addCustomer()
+	{
+	}
+	
+	//Function: showCustomerInfo
+	//inputs: none
+	//outputs: none
+	/*Description:
+	Show customer info, given customer name
+	Ask the user to supply the customer name.
+	Query the database and print all the information stored for the customer (do not display the
+	information on reservations), including the PittRewards number i.e. the cid.*/
+	public static void showCustomerInfo()
+	{
+	}
+	
+	//Function: findPriceByRoute
+	//inputs: none
+	//outputs: none
+	/*Description:
+	Ask the user to supply the two cities (city A and city B).
+	Print the high and low prices for a one-way ticket from city A to city B, the prices for a
+	one-way ticket from city B to city A, and the prices for a round-trip ticket between city A
+	and city B.*/
+	public static void findPriceByRoute()
+	{
+	}
+	
+	//Function: findAllRoutes
+	//inputs: none
+	//outputs: none
+	/*Description:
+	Ask the user to supply the departure city and the arrival city. Query the schedule database
+	and find all possible one-way routes between the given city combination. Print a list of
+	flight number, departure, city, departure time, and arrival time for all routes.
+	Direct routes are trivial. In addition to direct routes, we also allow routes with only one
+	connection (i.e. two flights in the route). However, for a connection between two flights to
+	be valid, both flights must be operating the same day at least once a week (when looking at
+	their weekly schedules) and, also, the arrival time of the first flight must be at least one hour
+	before the departure time of the second flight.
+	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
+	routes, and one that finds and prints the routes with one connection.*/
+	public static void findAllRoutes()
+	{
+	}
+	
+	//Function: findAllRoutesByAirline
+	//inputs: none
+	//outputs: none
+	/*Description:
+	Find all routes between two cities of a given airline
+	Ask the user to supply the departure city, the arrival city and the name of the airline. Query
+	the schedule database and find all possible one-way routes between the given city combination.
+	Print a list of airline id, flight number, departure, city, departure time, and arrival time
+	for all routes.
+
+	Direct routes are trivial. In addition to direct routes, we also allow routes with only one
+	connection (i.e. two flights in the route). However, for a connection between two flights to
+	be valid, both flights must be operating the same day at least once a week (when looking at
+	their weekly schedules) and, also, the arrival time of the first flight must be at least one hour
+	before the departure time of the second flight.
+	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
+	routes, and one that finds and prints the routes with one connection.*/
+	public static void findAllRoutesByAirline()
+	{
+	}
+	
+	//Function: findAvailableSeatsByRoute
+	//inputs: none
+	//outputs: none
+	/*Description:
+	 Find all routes with available seats between two cities on given date
+	Ask the user to supply the departure city, the arrival city, and the date. Same with the previous
+	task, print a list of flight number, departure, city, departure time, and arrival time for
+	all available routes.
+	Note that this might be the most difficult query of the project. You need to build upon
+	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
+	route and one of the two flights has available seats, while the other one does not.
+	*/
+	public static void findAvailableSeatsByRoute()
+	{
+	}
+	
+	//Function: findAvailableSeatsByAirline
+	//inputs: none
+	//outputs: none
+	/*Description:
+	For a given airline, find all routes with available seats between two cities on given date
+	Ask the user to supply the departure city, the arrival city, the date and the name of the airline.
+	Same with the previous task, print a list of airline id, flight number, departure, city,
+	departure time, and arrival time for all available routes.
+	Note that this might be the most difficult query of the project. You need to build upon
+	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
+	route and one of the two flights has available seats, while the other one does not*/
+	public static void findAvailableSeatsByAirline()
+	{
+	}
+	
+	//Function: addReservation
+	//inputs: none
+	//outputs: none
+	/*Description:
+	Ask the user to supply the information for all the flights that are part of his/her reservation.
+	For example, for each leg of the reservation you should be asking for the flight number
+	and the departure date. There can be a minimum of one leg (one-way ticket, direct route)
+	and a maximum of four legs (round-trip ticket, with one connection each way). A simple
+	way to do this is to ask the user to supply the flight number first, and then the date for each
+	leg, and if they put a flight number of 0 assume that this is the end of the input.	
+	After getting all the information from the user, your program must verify that there are still
+	available seats in the said flights. If there are seats available on all flights, generate a unique
+	reservation number and print this back to the user, along with a confirmation message. Otherwise,
+	print an error message*/
+	public static void addReservation()
+	{
+	}
+	
+	//Function: showReservationByNumber
+	//inputs: none
+	//outputs: none
+	/*Description:
+	Ask the user to supply the reservation number.
+	Query the database to get all the flights for the given reservation and print this to the user.
+	Print an error message in case of an non-existent reservation number.*/
+	public static void showReservationByNumber()
+	{
+	}
+	
+	//Function: buyTicket
+	//inputs: none
+	//outputs: none
+	/*Description:
+	Ask the user to supply the reservation number.
+	Mark the fact that the reservation was converted into a purchased ticket*/
+	public static void buyTicket()
+	{
+	}
+
+	public static void main(String[] args) throws SQLException
+	{
+		int clientOrAdmin;
+		
+		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
+		
+		String username,password;
+		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "password";
+		
+		try{
+			// Register the oracle driver.  
+			DriverManager.registerDriver (new oracle.jdbc.driver.OracleDriver());
+	    
+			//This is the location of the database.  This is the database in oracle
+			//provided to the class
+			String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass"; 
+	    
+			//create a connection to DB on class3.cs.pitt.edu
+			connection = DriverManager.getConnection(url, username, password); 
+			
+			//BELOW: our code
+			System.out.print("Welcome to Pitt Tours!\nWould you like to see the menu for:\n\t1) Admin\n\t2) Client\nEnter the menu item number to continue: ");
+			clientOrAdmin = Integer.parseInt(keyboard.nextLine());
+		
+			if(clientOrAdmin == 1)
+				AdminPrivileges();
+			else
+				ClientPrivileges();
+		}
+		catch(Exception Ex)  {
+			System.out.println("Error connecting to database.  Machine Error: " +
+			       Ex.toString());
+		}
+		finally
+		{
+			connection.close();
+		}
+	}
+}
