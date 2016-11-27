@@ -10,6 +10,7 @@ public class PittToursMenu
 {
 	//GLOBAL VARIABLES
 	public static Scanner keyboard = new Scanner(System.in);
+
 		
 	//BELOW: the db setup variable from recitation 8 (TranDemo1.java)
 	private static Connection connection; //used to hold the jdbc connection to the DB
@@ -18,7 +19,18 @@ public class PittToursMenu
     private ResultSet resultSet; //used to hold the result of your query (if one
     // exists)
     private String query;  //this will hold the query we are using
-			
+		
+	public PittToursMenu()
+	{
+		int clientOrAdmin;
+		System.out.print("Welcome to Pitt Tours!\nWould you like to see the menu for:\n\t1) Admin\n\t2) Client\nEnter the menu item number to continue: ");
+		clientOrAdmin = Integer.parseInt(keyboard.nextLine());
+		
+		if(clientOrAdmin == 1)
+			AdminPrivileges();
+		else
+			ClientPrivileges();
+	}
 			
 	//Function: AdminPrivileges
 	//inputs: none
@@ -26,7 +38,7 @@ public class PittToursMenu
 	//Description: The admin sub-menu for the overall application
 	//Based on the action the user wants to do, it routes to the correct method
 	//Will loop until user indicates exit
-	public static void AdminPrivileges()
+	public void AdminPrivileges()
 	{
 		int selection;
 		boolean exit = false;
@@ -66,17 +78,17 @@ public class PittToursMenu
 	//inputs: none
 	//outputs: none
 	//Description: Truncates the tables in order to erase the database
-	public static void eraseDatabase()
+	public void eraseDatabase()
 	{
 		String selection = "";
 		System.out.print("Are you sure? (y/n): ");
 		selection = keyboard.nextLine();
 		
-		if(selection.toLowerCase().Equals("y"))
+		if(selection.toLowerCase().equals("y"))
 		{
 			//TO DO: DATABASE
 		}
-		else if(selection.toLowerCase().Equals("n"))
+		else if(selection.toLowerCase().equals("n"))
 		{
 			System.out.println("The database will remain intact.\nReturning to menu...");
 		}
@@ -91,13 +103,52 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has ariline info
 	//inserts it into the database
-	public static void loadAirline()
+	public void loadAirline()
 	{
 		String selection = "";
 		System.out.print("Please enter the location of the .csv file: ");
 		selection = keyboard.nextLine();
-		
-		
+				
+		try
+		{
+			query = "insert into airline values (?,?,?,?)";
+			prepStatement = connection.prepareStatement(query);
+			//BufferedReader br = new BufferedReader(new FileReader(selection));
+			
+			//while(br.ready())
+			{
+				String[] line = ("1,Alaska,AS,1926").split(",");//br.readLine().split(",");
+				prepStatement.setString(1, line[0]); 
+				prepStatement.setString(2, line[1]);
+				prepStatement.setString(3, line[2]);
+				prepStatement.setLong(4, Integer.parseInt(line[3]));
+				prepStatement.executeUpdate();
+			}
+			
+			resultSet = statement.executeQuery("select * from airline");
+			System.out.println("\nAfter the insert, data is...\n");
+			while(resultSet.next()) {
+			System.out.println(
+				resultSet.getString(1) + ", " +
+				resultSet.getString(2) + ", " +
+				resultSet.getString(3) + ", " +
+				resultSet.getInt(4));
+			counter ++;
+			}
+			resultSet.close();
+		}
+		catch(Exception e)
+		{
+			System.out.print(e);
+		}
+		finally{
+		try {
+			if (statement != null) statement.close();
+			if (prepStatement != null) prepStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Cannot close Statement. Machine error: "+e.toString());
+		}
+		}
 	}
 	
 	//Function: loadSchedule
@@ -105,7 +156,7 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has schedule info
 	//inserts it into the database
-	public static void loadSchedule()
+	public void loadSchedule()
 	{
 		String selection = "";
 		System.out.print("Please enter the location of the .csv file: ");
@@ -117,7 +168,7 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has pricing info
 	//inserts it into the database
-	public static void loadPricing()
+	public void loadPricing()
 	{
 		String selection = "";
 		System.out.print("Please enter the location of the .csv file: ");
@@ -129,7 +180,7 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has plane info
 	//inserts it into the database
-	public static void loadPlaneInfo()
+	public void loadPlaneInfo()
 	{
 		String selection = "";
 		System.out.print("Please enter the location of the .csv file: ");
@@ -140,7 +191,7 @@ public class PittToursMenu
 	//inputs: none
 	//outputs: none
 	//Description: 
-	public static void generateManifest()
+	public void generateManifest()
 	{
 	}
 	
@@ -150,7 +201,7 @@ public class PittToursMenu
 	//Description: The admin sub-menu for the overall application
 	//Based on the action the user wants to do, it routes to the correct method
 	//Will loop until user indicates exit
-	public static void ClientPrivileges()
+	public void ClientPrivileges()
 	{
 		int selection;
 		boolean exit = false;
@@ -211,7 +262,7 @@ public class PittToursMenu
 	Insert all the supplied information and the PittRewards number into the database.
 	Display the PittRewards number as a confirmation of successfully adding the new customer
 	in the database*/
-	public static void addCustomer()
+	public void addCustomer()
 	{
 	}
 	
@@ -223,7 +274,7 @@ public class PittToursMenu
 	Ask the user to supply the customer name.
 	Query the database and print all the information stored for the customer (do not display the
 	information on reservations), including the PittRewards number i.e. the cid.*/
-	public static void showCustomerInfo()
+	public void showCustomerInfo()
 	{
 	}
 	
@@ -235,7 +286,7 @@ public class PittToursMenu
 	Print the high and low prices for a one-way ticket from city A to city B, the prices for a
 	one-way ticket from city B to city A, and the prices for a round-trip ticket between city A
 	and city B.*/
-	public static void findPriceByRoute()
+	public void findPriceByRoute()
 	{
 	}
 	
@@ -253,7 +304,7 @@ public class PittToursMenu
 	before the departure time of the second flight.
 	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
 	routes, and one that finds and prints the routes with one connection.*/
-	public static void findAllRoutes()
+	public void findAllRoutes()
 	{
 	}
 	
@@ -274,7 +325,7 @@ public class PittToursMenu
 	before the departure time of the second flight.
 	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
 	routes, and one that finds and prints the routes with one connection.*/
-	public static void findAllRoutesByAirline()
+	public void findAllRoutesByAirline()
 	{
 	}
 	
@@ -290,7 +341,7 @@ public class PittToursMenu
 	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
 	route and one of the two flights has available seats, while the other one does not.
 	*/
-	public static void findAvailableSeatsByRoute()
+	public void findAvailableSeatsByRoute()
 	{
 	}
 	
@@ -305,7 +356,7 @@ public class PittToursMenu
 	Note that this might be the most difficult query of the project. You need to build upon
 	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
 	route and one of the two flights has available seats, while the other one does not*/
-	public static void findAvailableSeatsByAirline()
+	public void findAvailableSeatsByAirline()
 	{
 	}
 	
@@ -323,7 +374,7 @@ public class PittToursMenu
 	available seats in the said flights. If there are seats available on all flights, generate a unique
 	reservation number and print this back to the user, along with a confirmation message. Otherwise,
 	print an error message*/
-	public static void addReservation()
+	public void addReservation()
 	{
 	}
 	
@@ -334,7 +385,7 @@ public class PittToursMenu
 	Ask the user to supply the reservation number.
 	Query the database to get all the flights for the given reservation and print this to the user.
 	Print an error message in case of an non-existent reservation number.*/
-	public static void showReservationByNumber()
+	public void showReservationByNumber()
 	{
 	}
 	
@@ -344,14 +395,12 @@ public class PittToursMenu
 	/*Description:
 	Ask the user to supply the reservation number.
 	Mark the fact that the reservation was converted into a purchased ticket*/
-	public static void buyTicket()
+	public void buyTicket()
 	{
 	}
 
 	public static void main(String[] args) throws SQLException
-	{
-		int clientOrAdmin;
-		
+	{		
 		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
 		
 		String username,password;
@@ -370,13 +419,7 @@ public class PittToursMenu
 			connection = DriverManager.getConnection(url, username, password); 
 			
 			//BELOW: our code
-			System.out.print("Welcome to Pitt Tours!\nWould you like to see the menu for:\n\t1) Admin\n\t2) Client\nEnter the menu item number to continue: ");
-			clientOrAdmin = Integer.parseInt(keyboard.nextLine());
-		
-			if(clientOrAdmin == 1)
-				AdminPrivileges();
-			else
-				ClientPrivileges();
+			PittToursMenu menu = new PittToursMenu();
 		}
 		catch(Exception Ex)  {
 			System.out.println("Error connecting to database.  Machine Error: " +
