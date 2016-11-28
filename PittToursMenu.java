@@ -236,8 +236,8 @@ public class PittToursMenu
 				prepStatement.setString(1, line[0]); 
 				prepStatement.setString(2, line[1]);
 				prepStatement.setString(3, line[2]);
-				prepStatement.setInt(4, line[3]);
-				prepStatement.setInt(5, line[4]);
+				prepStatement.setInt(4, Integer.parseInt(line[3]));
+				prepStatement.setInt(5, Integer.parseInt(line[4]));
 				prepStatement.executeUpdate();
 			}
 			
@@ -248,7 +248,7 @@ public class PittToursMenu
 			System.out.println(
 				resultSet.getString(1) + ", " +
 				resultSet.getString(2) + ", " +
-				resultSet.getInt(3) + ", " +
+				resultSet.getString(3) + ", " +
 				resultSet.getInt(4) + ", " +
 				resultSet.getInt(5));
 			}
@@ -278,6 +278,53 @@ public class PittToursMenu
 		String selection = "";
 		System.out.print("Please enter the location of the .csv file: ");
 		selection = keyboard.nextLine();
+		
+		try
+		{
+			query = "insert into plane values (?,?,?,?,?,?)";
+			prepStatement = connection.prepareStatement(query);
+			BufferedReader br = new BufferedReader(new FileReader(selection));
+			
+			while(br.ready())
+			{
+				String[] line = br.readLine().split(",");
+				java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd");
+				java.sql.Date date_reg = new java.sql.Date (df.parse(line[3]).getTime());
+				
+				prepStatement.setString(1, line[0]); 
+				prepStatement.setString(2, line[1]);
+				prepStatement.setInt(3, Integer.parseInt(line[2]));
+				prepStatement.setDate(4, date_reg);
+				prepStatement.setInt(5, Integer.parseInt(line[4]));
+				prepStatement.setString(6, line[5]);
+				prepStatement.executeUpdate();
+			}
+			
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("select * from price");
+			System.out.println("\nAfter the insert, data is...\n");
+			while(resultSet.next()) {
+			System.out.println(
+				resultSet.getString(1) + ", " +
+				resultSet.getString(2) + ", " +
+				resultSet.getInt(3) + ", " +
+				resultSet.getInt(4) + ", " +
+				resultSet.getInt(5));
+			}
+			resultSet.close();
+		}
+		catch(Exception e)
+		{
+			System.out.print(e);
+		}
+		finally{
+			try {
+				if (statement != null) statement.close();
+				if (prepStatement != null) prepStatement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
+		}
 	}
 	
 	//Function: generateManifest
