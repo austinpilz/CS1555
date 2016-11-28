@@ -5,6 +5,7 @@
 import java.sql.*; 
 import java.text.ParseException;
 import java.util.*;
+import java.io.*;
 
 public class PittToursMenu
 {
@@ -106,22 +107,18 @@ public class PittToursMenu
 	public void loadAirline()
 	{
 		String selection = "";
-		//System.out.print("Please enter the location of the .csv file: ");
-		//selection = keyboard.nextLine();
+		System.out.print("Please enter the location of the .csv file: ");
+		selection = keyboard.nextLine();
 				
 		try
 		{
 			query = "insert into airline values (?,?,?,?)";
 			prepStatement = connection.prepareStatement(query);
-			//BufferedReader br = new BufferedReader(new FileReader(selection));
+			BufferedReader br = new BufferedReader(new FileReader(selection));
 			
-			//while(br.ready())
+			while(br.ready())
 			{
-				String[] line = ("1,Alaska,AS,1926").split(",");//br.readLine().split(",");
-				System.out.println(line[0]);
-				System.out.println(line[1]);
-				System.out.println(line[2]);
-				System.out.println(line[3]);
+				String[] line = br.readLine().split(",");
 				prepStatement.setString(1, line[0]); 
 				prepStatement.setString(2, line[1]);
 				prepStatement.setString(3, line[2]);
