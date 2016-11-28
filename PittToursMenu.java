@@ -2,8 +2,10 @@
 *Alisha Forrest - ahf5
 *Austin Pilz - anp147
 */
-import java.sql.*; 
-import java.text.ParseException;
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.DriverManager;
 import java.util.*;
 import java.io.*;
 
@@ -87,7 +89,32 @@ public class PittToursMenu
 		
 		if(selection.toLowerCase().equals("y"))
 		{
-			//TO DO: DATABASE
+			try
+			{
+				query = "{call eraseDatabase}";
+				prepStatement = connection.prepareCall(query);
+				statement = connection.createStatement();
+				prepStatement.executeQuery();
+				prepStatement.close();
+			}
+			catch(Exception e)
+			{
+				System.out.println("Encountered an unexpected error while attempting to erase the database:");
+				System.out.print(e);
+			}
+			finally
+			{
+				try
+				{
+					if (statement != null) statement.close();
+					if (prepStatement != null) prepStatement.close();
+				}
+				catch (SQLException e)
+				{
+					System.out.println("Cannot close Statement. Machine error: "+e.toString());
+				}
+			}
+
 		}
 		else if(selection.toLowerCase().equals("n"))
 		{
@@ -544,13 +571,13 @@ public class PittToursMenu
 		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
 		
 		String username,password;
-		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "password";
+		username = "anp147"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "3858766";
 		
 		try{
 			// Register the oracle driver.  
 			DriverManager.registerDriver (new oracle.jdbc.driver.OracleDriver());
-	    
+
 			//This is the location of the database.  This is the database in oracle
 			//provided to the class
 			String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass"; 
