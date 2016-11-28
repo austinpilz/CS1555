@@ -122,7 +122,7 @@ public class PittToursMenu
 				prepStatement.setString(1, line[0]); 
 				prepStatement.setString(2, line[1]);
 				prepStatement.setString(3, line[2]);
-				prepStatement.setLong(4, Integer.parseInt(line[3]));
+				prepStatement.setInt(4, Integer.parseInt(line[3]));
 				prepStatement.executeUpdate();
 			}
 			
@@ -143,12 +143,12 @@ public class PittToursMenu
 			System.out.print(e);
 		}
 		finally{
-		try {
-			if (statement != null) statement.close();
-			if (prepStatement != null) prepStatement.close();
-		} catch (SQLException e) {
-			System.out.println("Cannot close Statement. Machine error: "+e.toString());
-		}
+			try {
+				if (statement != null) statement.close();
+				if (prepStatement != null) prepStatement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
 		}
 	}
 	
@@ -162,6 +162,55 @@ public class PittToursMenu
 		String selection = "";
 		System.out.print("Please enter the location of the .csv file: ");
 		selection = keyboard.nextLine();
+		
+		try
+		{
+			query = "insert into flight values (?,?,?,?,?,?,?,?)";
+			prepStatement = connection.prepareStatement(query);
+			BufferedReader br = new BufferedReader(new FileReader(selection));
+			
+			while(br.ready())
+			{
+				String[] line = br.readLine().split(",");
+				prepStatement.setString(1, line[0]); 
+				prepStatement.setString(2, line[1]);
+				prepStatement.setString(3, line[2]);
+				prepStatement.setString(4, line[3]);
+				prepStatement.setString(5, line[4]);
+				prepStatement.setString(6, line[5]);
+				prepStatement.setString(7, line[6]);
+				prepStatement.setString(8, line[7]);
+				prepStatement.executeUpdate();
+			}
+			
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("select * from flight");
+			System.out.println("\nAfter the insert, data is...\n");
+			while(resultSet.next()) {
+			System.out.println(
+				resultSet.getString(1) + ", " +
+				resultSet.getString(2) + ", " +
+				resultSet.getString(3) + ", " +
+				resultSet.getString(4) + ", " +
+				resultSet.getString(5) + ", " +
+				resultSet.getString(6) + ", " +
+				resultSet.getString(7) + ", " +
+				resultSet.getString(8));
+			}
+			resultSet.close();
+		}
+		catch(Exception e)
+		{
+			System.out.print(e);
+		}
+		finally{
+			try {
+				if (statement != null) statement.close();
+				if (prepStatement != null) prepStatement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
+		}
 	}
 	
 	//Function: loadPricing
@@ -174,6 +223,49 @@ public class PittToursMenu
 		String selection = "";
 		System.out.print("Please enter the location of the .csv file: ");
 		selection = keyboard.nextLine();
+		
+		try
+		{
+			query = "insert into price values (?,?,?,?,?)";
+			prepStatement = connection.prepareStatement(query);
+			BufferedReader br = new BufferedReader(new FileReader(selection));
+			
+			while(br.ready())
+			{
+				String[] line = br.readLine().split(",");
+				prepStatement.setString(1, line[0]); 
+				prepStatement.setString(2, line[1]);
+				prepStatement.setString(3, line[2]);
+				prepStatement.setInt(4, line[3]);
+				prepStatement.setInt(5, line[4]);
+				prepStatement.executeUpdate();
+			}
+			
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery("select * from price");
+			System.out.println("\nAfter the insert, data is...\n");
+			while(resultSet.next()) {
+			System.out.println(
+				resultSet.getString(1) + ", " +
+				resultSet.getString(2) + ", " +
+				resultSet.getInt(3) + ", " +
+				resultSet.getInt(4) + ", " +
+				resultSet.getInt(5));
+			}
+			resultSet.close();
+		}
+		catch(Exception e)
+		{
+			System.out.print(e);
+		}
+		finally{
+			try {
+				if (statement != null) statement.close();
+				if (prepStatement != null) prepStatement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
+		}
 	}
 	
 	//Function: loadPlaneInfo
