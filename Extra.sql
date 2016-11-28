@@ -27,4 +27,14 @@ SELECT COUNT(*) FROM PLANE;
 /* Verify example customer # matches project requirements (200) */
 SELECT COUNT(*) FROM CUSTOMER;
 
+/* Get flights that have same dest and arrivl city */
+SELECT * FROM FLIGHT ORDER BY DEPARTURE_CITY ASC;
+
+/* Generate data for example reservations */
+SELECT Flight_Number, Departure_City, Arrival_City FROM FLIGHT WHERE Flight.Arrival_City != Flight.Departure_City;
+
+SELECT * FROM RESERVATION;
+SELECT AirLine_ID, Departure_City, Arrival_City FROM FLIGHT WHERE Flight.Arrival_City != Flight.Departure_City;
+
+SELECT * FROM Reservation;
 
