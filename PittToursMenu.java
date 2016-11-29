@@ -484,6 +484,132 @@ public class PittToursMenu
 	in the database*/
 	public void addCustomer()
 	{
+		String salutation, firstName, lastName, email, phone, ccnum, ccexpire, street, city, state, freqMiles;
+
+		System.out.print("Please enter the customers salutation (Mr/Ms/Mrs): ");
+		salutation = keyboard.nextLine();
+
+		System.out.print("Please enter the customers first name: ");
+		firstName = keyboard.nextLine();
+
+		System.out.print("Please enter the customers last name: ");
+		lastName = keyboard.nextLine();
+
+		System.out.print("Please enter the customers email address: ");
+		email = keyboard.nextLine();
+
+		System.out.print("Please enter the customers phone number (no dashes): ");
+		phone = keyboard.nextLine();
+
+		System.out.print("Please enter the customers street address: ");
+		street = keyboard.nextLine();
+
+		System.out.print("Please enter the customers city: ");
+		city = keyboard.nextLine();
+
+		System.out.print("Please enter the customers state: ");
+		state = keyboard.nextLine();
+
+		System.out.print("Please enter the customers Credit Card number (no dashes) : ");
+		ccnum = keyboard.nextLine();
+
+		System.out.print("Please enter the customers Credit Card expiration date (ex 18-NOV-16): ");
+		ccexpire = keyboard.nextLine();
+
+		System.out.print("Please enter the airline ID of the customers frequent miles program: ");
+		freqMiles = keyboard.nextLine();
+
+		//Check to make sure there's not already a customer with that first and last name
+		boolean nameExists = false;
+
+		try
+		{
+			query = "SELECT * FROM Customers WHERE First_Name = ? AND Last_Name=?";
+			prepStatement = connection.prepareStatement(query);
+			prepStatement.setString(1, firstName+"");
+			prepStatement.setString(2, lastName+"");
+			resultSet = prepStatement.executeQuery();
+
+			while (resultSet.next())
+			{
+				nameExists = true;
+			}
+		} catch (Exception e) {
+			System.out.print(e);
+		} finally {
+			try {
+				if (statement != null) statement.close();
+				if (prepStatement != null) prepStatement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: " + e.toString());
+			}
+		}
+
+		if (nameExists)
+		{
+			System.out.println("ERROR! A customer with that first and last name already exist.\n\n\n");
+		}
+		else
+		{
+			int customerID = 0;
+
+			try {
+				callStatement = connection.prepareCall("{call generateCustomerID(?)}");
+				callStatement.registerOutParameter(1, Types.INTEGER);
+				callStatement.execute();
+				customerID = callStatement.getInt(1);
+				callStatement.close();
+
+				System.out.println("Generated CID #" + customerID);
+			}
+		 	catch (Exception e)
+			{
+				System.out.print(e);
+			} finally {
+				try {
+					if (statement != null) statement.close();
+					if (callStatement != null) callStatement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: " + e.toString());
+				}
+			}
+
+			//Insert
+			try {
+				query = "insert into Customer values (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				prepStatement = connection.prepareStatement(query);
+
+				prepStatement.setString(1, Integer.toString(customerID));
+				prepStatement.setString(2, salutation);
+				prepStatement.setString(3, firstName);
+				prepStatement.setString(4, lastName);
+				prepStatement.setString(5, ccnum);
+				prepStatement.setString(6, ccexpire);
+				prepStatement.setString(7, street);
+				prepStatement.setString(8, city);
+				prepStatement.setString(9, state);
+				prepStatement.setString(10, phone);
+				prepStatement.setString(11, email);
+				prepStatement.setString(12, salutation);
+				prepStatement.setString(13, freqMiles);
+				prepStatement.executeUpdate();
+			}
+			catch (Exception e)
+				{
+					System.out.print(e);
+				} finally {
+					try {
+						if (statement != null) statement.close();
+						if (callStatement != null) callStatement.close();
+					} catch (SQLException e) {
+						System.out.println("Cannot close Statement. Machine error: " + e.toString());
+					}
+				}
+
+
+		}
+
+
 	}
 	
 	//Function: showCustomerInfo
@@ -496,6 +622,51 @@ public class PittToursMenu
 	information on reservations), including the PittRewards number i.e. the cid.*/
 	public void showCustomerInfo()
 	{
+		String firstName, lastName;
+
+		System.out.print("Please enter the customers first name: ");
+		firstName = keyboard.nextLine();
+
+		System.out.print("Please enter the customers last name: ");
+		lastName = keyboard.nextLine();
+
+		try
+		{
+			query = "SELECT * FROM Customers WHERE First_Name = ? AND Last_Name=?";
+			prepStatement = connection.prepareStatement(query);
+			prepStatement.setString(1, firstName+"");
+			prepStatement.setString(2, lastName+"");
+			resultSet = prepStatement.executeQuery();
+
+			if (resultSet.getFetchSize() != 0)
+			{
+
+				System.out.format("%15s%15s%15s%15s%15s\n", new String[]{"PittRewards #", "Salutation",  "First Name", "Last Name", "Street", "City", "State", "Phone", "Email", "FreqMiles#", "CC#", "CCExpire"});
+
+				while (resultSet.next())
+				{
+					System.out.format("%15s%15s%15s%15s%15s\n", new String[]{resultSet.getString("CID"), resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name"), resultSet.getString("Street"), resultSet.getString("City"), resultSet.getString("State"), resultSet.getString("Phone"), resultSet.getString("Email"), resultSet.getString("Frequent_Miles"), resultSet.getString("Credit_Card_Num"), resultSet.getString("Credit_Card_Expire")});
+				}
+
+				System.out.println("\n\n\n");
+			}
+			else
+			{
+				System.out.println("ERROR: There was no customer with that name!\n\n\n");
+			}
+
+			resultSet.close();
+
+		} catch (Exception e) {
+			System.out.print(e);
+		} finally {
+			try {
+				if (statement != null) statement.close();
+				if (prepStatement != null) prepStatement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: " + e.toString());
+			}
+		}
 	}
 	
 	//Function: findPriceByRoute
@@ -860,12 +1031,16 @@ public class PittToursMenu
 	public static void main(String[] args) throws SQLException
 	{		
 		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
-		
+
+
+		System.out.println("Welcome to PittFlights...");
+
 		String username,password;
-		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "password";
+		username = "anp147"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "3858766";
 		
-		try{
+		try
+		{
 			// Register the oracle driver.  
 			DriverManager.registerDriver (new oracle.jdbc.driver.OracleDriver());
 
