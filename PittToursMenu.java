@@ -619,10 +619,61 @@ public class PittToursMenu
 	Print an error message in case of an non-existent reservation number.*/
 	public void showReservationByNumber()
 	{
-		/* First, just do a select statement and show all the info about the reservation */
-		/* Then, do a select for all reservation details for the reservation with flight number*/
+		String reservationNumber = "";
 
-		/* Should do a join with reservation_details and flights based on the flight_number to get city names */
+		System.out.print("Please enter the reservation number to generate manifest for: ");
+		reservationNumber = keyboard.nextLine();
+
+		//Perform data input checking
+		if (reservationNumber.length() > 0)
+		{
+
+			System.out.println("\nFetching reservation flight reservation # " + reservationNumber + " ...");
+			try
+			{
+				query = "SELECT * FROM ReservationFlightInfo WHERE Reservation_Number = ?";
+				prepStatement = connection.prepareStatement(query);
+				prepStatement.setString(1, reservationNumber+"");
+				resultSet = prepStatement.executeQuery();
+
+				if (resultSet.getFetchSize() != 0) {
+
+					int i = 0;
+					final Object[][] table = new String[4][];
+					table[i++] = new String[]{"Flight #", "Dept City", "Dept Time", "Arr City", "Arr Time"};
+
+					while (resultSet.next()) {
+						table[i++] = new String[]{resultSet.getString("FLIGHT_NUMBER"), resultSet.getString("DEPARTURE_CITY"), resultSet.getString("DEPARTURE_TIME"), resultSet.getString("ARRIVAL_CITY"), resultSet.getString("ARRIVAL_TIME")};
+					}
+
+					for (final Object[] row : table) {
+						System.out.format("%15s%15s%15s%15s%15s\n", row);
+					}
+
+					System.out.println("\n\n\n");
+				}
+				else
+				{
+					System.out.println("ERROR: There were no flights found for that reservation number!\n\n\n");
+				}
+
+				resultSet.close();
+
+			} catch (Exception e) {
+				System.out.print(e);
+			} finally {
+				try {
+					if (statement != null) statement.close();
+					if (prepStatement != null) prepStatement.close();
+				} catch (SQLException e) {
+					System.out.println("Cannot close Statement. Machine error: " + e.toString());
+				}
+			}
+		}
+		else
+		{
+			System.out.println("ERROR: Invalid entry of flight number. Aborting reservation info lookup\n\n\n");
+		}
 	}
 	
 	//Function: buyTicket
