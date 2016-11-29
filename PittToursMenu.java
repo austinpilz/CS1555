@@ -642,11 +642,11 @@ public class PittToursMenu
 			if (resultSet.getFetchSize() != 0)
 			{
 
-				System.out.format("%15s%15s%15s%15s%15s\n", new String[]{"PittRewards #", "Salutation",  "First Name", "Last Name", "Street", "City", "State", "Phone", "Email", "FreqMiles#", "CC#", "CCExpire"});
+				System.out.format("%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s\n", new String[]{"PittRewards #", "Salutation",  "First Name", "Last Name", "Street", "City", "State", "Phone", "Email", "FreqMiles#", "CC#", "CCExpire"});
 
 				while (resultSet.next())
 				{
-					System.out.format("%15s%15s%15s%15s%15s\n", new String[]{resultSet.getString("CID"), resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name"), resultSet.getString("Street"), resultSet.getString("City"), resultSet.getString("State"), resultSet.getString("Phone"), resultSet.getString("Email"), resultSet.getString("Frequent_Miles"), resultSet.getString("Credit_Card_Num"), resultSet.getString("Credit_Card_Expire")});
+					System.out.format("%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getString("CID"), resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name"), resultSet.getString("Street"), resultSet.getString("City"), resultSet.getString("State"), resultSet.getString("Phone"), resultSet.getString("Email"), resultSet.getString("Frequent_Miles"), resultSet.getString("Credit_Card_Num"), resultSet.getString("Credit_Card_Expire")});
 				}
 
 				System.out.println("\n\n\n");
@@ -868,36 +868,30 @@ public class PittToursMenu
             }
 
             //supply all the info for direct flights and connecting flights
-            System.out.println("All flights between " + dc + " and " + ac + ":\nflight number, airline id, departure_city, arrival_city, departure_time, arrival_time");
-            for(Integer i : flightNums)
+            System.out.println("All flights between " + dc + " and " + ac);
+
+
+			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
+
+			for(Integer i : flightNums)
             {
-                query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
+                query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
                 resultSet = statement.executeQuery(query);
 
                 if(resultSet.next()) {
-                    System.out.println(resultSet.getInt(1)+" , "+
-                            resultSet.getInt(2)+" , "+
-                            resultSet.getString(3)+" , "+
-                            resultSet.getString(4)+" , "+
-                            resultSet.getString(5)+" , "+
-                            resultSet.getString(6));
+					System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
                 }
                 resultSet.close();
             }
 
             for(Integer i : connectFlightNumber)
             {
-                query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
+                query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
                 resultSet = statement.executeQuery(query);
 
                 if(resultSet.next()) {
-                    System.out.println(resultSet.getInt(1)+" , "+
-                            resultSet.getInt(2)+" , "+
-                            resultSet.getString(3)+" , "+
-                            resultSet.getString(4)+" , "+
-                            resultSet.getString(5)+" , "+
-                            resultSet.getString(6));
-                }
+					System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+				}
                 resultSet.close();
             }
 
@@ -936,7 +930,163 @@ public class PittToursMenu
 	routes, and one that finds and prints the routes with one connection.*/
 	public void findAllRoutesByAirline()
 	{
+		//USER INPUT
+		String dc, ac, date1, airline;
+		int dayOfWeek = 0;
 
+		System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
+		dc = keyboard.nextLine();
+		System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
+		ac = keyboard.nextLine();
+		System.out.print("Please enter the airline ID: ");
+		airline = keyboard.nextLine();
+		System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
+		date1 = keyboard.nextLine();
+		try{
+			java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
+			dayOfWeek = date.getDay();
+		}
+		catch(Exception e){
+			System.out.println(e);}
+
+		//DB INTERACTIONS
+		try
+		{
+			ArrayList<Integer> flightNums = new ArrayList<Integer>();
+			statement = connection.createStatement();
+
+			//ALL DIRECT FLIGHTS
+			query = "select flight_number, weekly_schedule from flight where departure_city = \'"+dc+"\' AND arrival_city = \'"+ac+"\' AND AIRLINE_ID = \'" + airline + "\'";
+			resultSet = statement.executeQuery(query);
+
+			while(resultSet.next()) {
+				if(resultSet.getString(2).charAt(dayOfWeek) != '-')
+				{
+					flightNums.add(resultSet.getInt(1));
+				}
+			}
+			resultSet.close();
+
+
+			//Find all flights that have the start location or end location
+			query = "select flight_number, departure_city, arrival_city, weekly_schedule from flight where (departure_city = \'"+dc+"\' or arrival_city = \'"+ac+"\') AND airline_id = \'" + airline + "\'";
+			resultSet = statement.executeQuery(query);
+			Hashtable<String,ArrayList<String>> connections = new Hashtable<String,ArrayList<String>>();
+			ArrayList<Integer> connectFlightNumber = new ArrayList<Integer>();
+
+			while(resultSet.next()) {
+				String dctemp = resultSet.getString(2), actemp = resultSet.getString(3);
+				int fn = resultSet.getInt(1);
+				if(resultSet.getString(4).charAt(dayOfWeek) != '-')
+				{
+					if(!dctemp.equals(dc))
+					{
+						if(!connections.containsKey(dctemp))
+						{
+							ArrayList<String> temp = new ArrayList<String>();
+							temp.add(fn+",2");
+							connections.put(dctemp, temp);
+						}
+						else
+						{
+							ArrayList<String> temp = connections.get(dctemp);
+							temp.add(fn+",2");
+							connections.put(dctemp, temp);
+						}
+						connectFlightNumber.add(fn);
+					}
+					if(!actemp.equals(ac))
+					{
+						if(!connections.containsKey(actemp))
+						{
+							ArrayList<String> temp = new ArrayList<String>();
+							temp.add(fn+",1");
+							connections.put(actemp, temp);
+						}
+						else
+						{
+							ArrayList<String> temp = connections.get(actemp);
+							temp.add(fn+",1");
+							connections.put(actemp, temp);
+						}
+						connectFlightNumber.add(fn);
+					}
+				}
+			}
+			resultSet.close();
+
+			//Check to see if the flights connect
+			for(String key: connections.keySet())
+			{
+				boolean leg1 = false, leg2 = false;
+				ArrayList<String> temp = connections.get(key);
+				ArrayList<Integer> foo = new ArrayList<Integer>();
+				for(String leg: temp)
+				{
+					int fNum = Integer.parseInt(leg.split(",")[0]);
+					if(connectFlightNumber.contains(fNum))
+					{
+						foo.add(fNum);
+						if(leg.split(",")[1].equals("1"))
+							leg1 = true;
+						else if(leg.split(",")[1].equals("2"))
+							leg2 = true;
+
+						if(leg1 && leg2)
+							break;
+					}
+				}
+				if(!leg1 || !leg2)
+				{
+					for(Integer i: foo)
+					{
+						connectFlightNumber.remove(i);
+					}
+				}
+			}
+
+			//supply all the info for direct flights and connecting flights
+			System.out.println("All flights between " + dc + " and " + ac);
+
+
+			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
+
+			for(Integer i : flightNums)
+			{
+				query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
+				resultSet = statement.executeQuery(query);
+
+				if(resultSet.next()) {
+					System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+				}
+				resultSet.close();
+			}
+
+			for(Integer i : connectFlightNumber)
+			{
+				query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
+				resultSet = statement.executeQuery(query);
+
+				if(resultSet.next()) {
+					System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+				}
+				resultSet.close();
+			}
+
+
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		finally
+		{
+			try {
+				if (statement != null) statement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
+		}
 	}
 	
 	//Function: findAvailableSeatsByRoute
