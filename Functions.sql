@@ -22,28 +22,25 @@ END;
 
 /* 5 - Load plane information */
 
-/* 6 - Passenger Manifest (Austin) */
+/* 6 - Passenger Manifest (Austin) (DONE) */
 /* For a specific flight on a specific day. 
-Input is flight number and date.
-Search the database to locate those passengers who bought tickets for given flight for the given date. 
-Print the passenger list (salutation, first name, last name). */
+Assumptions: Create a view that already has all of the passengers for all flights, across all dates, who have purchased a ticket. Then Java code is
+eaiser to read and maintain*/
 
-CREATE OR REPLACE PROCEDURE passengerManifest (flightNumber IN varchar2, flightDate IN DATE)
-IS  
-  BEGIN
-    SELECT * FROM Reservation_Detail rd
-    LEFT JOIN Reservation r
+CREATE OR REPLACE VIEW passengerManifest AS
+SELECT r.flight_number, r.Flight_Date, Salutation, First_Name, Last_Name FROM Customer
+RIGHT JOIN
+ (SELECT r.CID, rd.Flight_Number, rd.Flight_Date FROM Reservation_Detail rd
+    RIGHT JOIN Reservation r
     ON rd.reservation_number = r.reservation_number
-    WHERE rd.fligh_number = flightNumber AND rd.flightDate = flightDate AND r.ticketed = "Y";
-  END;
-/
-
-/* View should have Flight #, Flight Date, Passenger Salutation, First, Last*/
-
-
-
-
-
+    WHERE r.ticketed = 'Y'
+    ) r
+    ON Customer.CID = r.CID;
+    
+/* SELECT * FROM passengerManifest WHERE flight_number = '1' AND flight_date = '18-NOV-16'; */
+    
+    
+    
 /* -- User Side -- */
 
 /* 7 - Add Customer (Austin) */
@@ -102,6 +99,9 @@ END;
 variable rowsU number;
 exec purchaseTicket('999', :rowsU);
 print rowsU; */
+
+
+
 
 
 
