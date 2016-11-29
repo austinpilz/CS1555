@@ -444,7 +444,7 @@ public class PittToursMenu
 					findAllRoutesByAirline();
 					break;
 				case 6:
-					findAvailableSeatsByRoute();
+					findAvailableSeats();
 					break;
 				case 7: 
 					findAvailableSeatsByAirline();
@@ -504,6 +504,56 @@ public class PittToursMenu
 	and city B.*/
 	public void findPriceByRoute()
 	{
+		String city1, city2;
+		System.out.print("Please enter the three-letter airport code of the city: ");
+		city1 = keyboard.nextLine().toUpperCase();
+		System.out.print("Please enter the three-letter airport code of the city: ");
+		city2 = keyboard.nextLine().toUpperCase();
+		
+		try
+		{
+			statement = connection.createStatement();
+			query = "select departure_city, arrival_city, high_price, low_price, airline_id, airline_name from price natural join airline where (departure_city = \'"+city1+"\' and arrival_city = \'"+city2+"\') OR (departure_city = \'"+city2+"\' and arrival_city = \'"+city1+"\') order by airline_id";
+			resultSet = statement.executeQuery(query);
+			
+			int tempHighPrice = 0, tempLowPrice = 0, tempAirline = -1, numRows = 0;
+			while(resultSet.next()) {
+				int currentAirline = resultSet.getInt(5);
+				int currentLow = resultSet.getInt(4);
+				int currentHigh = resultSet.getInt(3);
+				
+				System.out.println("DEPART FROM "+resultSet.getString(1)+" ARRIVE TO "+resultSet.getString(2)+" ON "+resultSet.getString(6));
+				System.out.println("\tHIGH PRICE = $"+currentHigh+"\n\tLOW PRICE = $"+currentLow);
+				
+				if(currentAirline == tempAirline)
+				{
+					System.out.println("ROUND TRIP BETWEEN "+resultSet.getString(1)+" AND "+resultSet.getString(2)+" ON "+resultSet.getString(6));
+					System.out.println("\tHIGH PRICE = $"+(currentHigh+tempHighPrice)+"\n\tLOW PRICE = $"+(currentLow+tempLowPrice));
+				}
+			
+				tempHighPrice = currentHigh;
+				tempLowPrice = currentLow;
+				tempAirline = currentAirline;
+				numRows++;
+			}
+			resultSet.close();
+			if(numRows == 0)
+			{
+				System.out.println("There are no results for prices between: "+city1+","+city2);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		finally
+		{
+			try {
+				if (statement != null) statement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
+		}
 	}
 	
 	//Function: findAllRoutes
@@ -550,6 +600,7 @@ public class PittToursMenu
 	routes, and one that finds and prints the routes with one connection.*/
 	public void findAllRoutesByAirline()
 	{
+
 	}
 	
 	//Function: findAvailableSeatsByRoute
@@ -564,7 +615,7 @@ public class PittToursMenu
 	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
 	route and one of the two flights has available seats, while the other one does not.
 	*/
-	public void findAvailableSeatsByRoute()
+	public void findAvailableSeats()
 	{
 	}
 	
@@ -733,8 +784,8 @@ public class PittToursMenu
 		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
 		
 		String username,password;
-		username = "anp147"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "3858766";
+		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "password";
 		
 		try{
 			// Register the oracle driver.  
