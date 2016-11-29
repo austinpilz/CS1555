@@ -778,6 +778,248 @@ public class PittToursMenu
 
 	}
 	
+
+	//Function: findAvailableSeatsByAirline
+	//inputs: none
+	//outputs: none
+	/*Description:
+	For a given airline, find all routes with available seats between two cities on given date
+	Ask the user to supply the departure city, the arrival city, the date and the name of the airline.
+	Same with the previous task, print a list of airline id, flight number, departure, city,
+	departure time, and arrival time for all available routes.
+
+	Note that this might be the most difficult query of the project. You need to build upon
+	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
+	route and one of the two flights has available seats, while the other one does not*/
+	public void findAvailableSeatsByAirline()
+	{
+		//USER INPUT
+		String dc, ac, date1;
+		int dayOfWeek = 0;
+		String airline;
+		int airline_id = 0;
+		
+		System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
+		dc = keyboard.nextLine();
+		System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
+		ac = keyboard.nextLine();
+		System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
+		date1 = keyboard.nextLine();
+		System.out.print("Please enter the name of the airline you wish to fly with: ");
+		airline = keyboard.nextLine();
+		try{
+			java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
+			dayOfWeek = date.getDay();
+		}
+		catch(Exception e){
+			System.out.println(e);}
+		
+		//DB INTERACTIONS
+		try
+		{
+			ArrayList<Integer> flightNums = new ArrayList<Integer>();
+			statement = connection.createStatement();
+			//find airline id
+			query = "select airline_id from airline where airline_name = \'"+airline+"\'";
+			resultSet = statement.executeQuery(query);
+			
+			if(resultSet.next()) {
+				airline_id = resultSet.getInt(1);
+			}
+			resultSet.close();
+			
+			//ALL DIRECT FLIGHTS
+			query = "select flight_number, weekly_schedule from flight where (departure_city = \'"+dc+"\' AND arrival_city = \'"+ac+"\') AND airline_id = \'"+airline_id+"\'";
+			resultSet = statement.executeQuery(query);
+			
+			while(resultSet.next()) {
+				if(resultSet.getString(2).charAt(dayOfWeek) != '-')
+				{
+					flightNums.add(resultSet.getInt(1));
+				}
+			}
+			resultSet.close();
+		
+			
+			//Check to see if there is a seat available
+			ArrayList<Integer> removeFlights = new ArrayList<Integer>();
+			for(Integer i : flightNums)
+			{
+				int planeCap = 0;
+				query = "select plane_capacity from flight natural join plane where flight_number = \'"+i+"\' AND airline_id = \'"+airline_id+"\'";
+				resultSet = statement.executeQuery(query);
+			
+				if(resultSet.next()) {
+					planeCap = resultSet.getInt(1);
+				}
+				resultSet.close();
+				
+				query = "select count(reservation_number) from flight natural join reservation_detail where flight_number = \'"+i+"\' and flight_date = TO_DATE(\'"+date1+"\',\'yyyy/MM/dd\')";
+				resultSet = statement.executeQuery(query);
+			
+				if(resultSet.next()) {
+					if(resultSet.getInt(1) >= planeCap)
+					{
+						removeFlights.add(i);
+					}
+				}
+				resultSet.close();
+			}
+			flightNums.removeAll(removeFlights);
+			
+			//Find all flights that have the start location or end location
+			query = "select flight_number, departure_city, arrival_city, weekly_schedule from flight where (departure_city = \'"+dc+"\' or arrival_city = \'"+ac+"\') and airline_id = \'"+airline_id+"\'";
+			resultSet = statement.executeQuery(query);
+			Hashtable<String,ArrayList<String>> connections = new Hashtable<String,ArrayList<String>>();
+			ArrayList<Integer> connectFlightNumber = new ArrayList<Integer>(); 
+			
+			while(resultSet.next()) {
+				String dctemp = resultSet.getString(2), actemp = resultSet.getString(3);
+				int fn = resultSet.getInt(1);
+				if(resultSet.getString(4).charAt(dayOfWeek) != '-')
+				{
+					if(!dctemp.equals(dc))
+					{
+						if(!connections.containsKey(dctemp))
+						{
+							ArrayList<String> temp = new ArrayList<String>();
+							temp.add(fn+",2");
+							connections.put(dctemp, temp);
+						}
+						else
+						{
+							ArrayList<String> temp = connections.get(dctemp);
+							temp.add(fn+",2");
+							connections.put(dctemp, temp);
+						}
+						connectFlightNumber.add(fn);
+					}
+					if(!actemp.equals(ac))
+					{
+						if(!connections.containsKey(actemp))
+						{
+							ArrayList<String> temp = new ArrayList<String>();
+							temp.add(fn+",1");
+							connections.put(actemp, temp);
+						}
+						else
+						{
+							ArrayList<String> temp = connections.get(actemp);
+							temp.add(fn+",1");
+							connections.put(actemp, temp);
+						}
+						connectFlightNumber.add(fn);
+					}
+				}
+			}
+			resultSet.close();
+			
+			//Check to see if there is a seat available
+			removeFlights = new ArrayList<Integer>();
+			for(Integer i : connectFlightNumber)
+			{
+				int planeCap = 0;
+				query = "select plane_capacity from flight natural join plane where flight_number = \'"+i+"\'";
+				resultSet = statement.executeQuery(query);
+			
+				if(resultSet.next()) {
+					planeCap = resultSet.getInt(1);
+				}
+				resultSet.close();
+				
+				query = "select count(reservation_number) from flight natural join reservation_detail where flight_number = \'"+i+"\' and flight_date = TO_DATE(\'"+date1+"\',\'yyyy/MM/dd\')";
+				resultSet = statement.executeQuery(query);
+			
+				if(resultSet.next()) {
+					if(resultSet.getInt(1) >= planeCap)
+					{
+						removeFlights.add(i);
+					}
+				}
+				resultSet.close();
+			}
+			connectFlightNumber.removeAll(removeFlights);
+			
+			//Check to see if the flights connect
+			for(String key: connections.keySet())
+			{
+				boolean leg1 = false, leg2 = false;
+				ArrayList<String> temp = connections.get(key);
+				ArrayList<Integer> foo = new ArrayList<Integer>();
+				for(String leg: temp)
+				{
+					int fNum = Integer.parseInt(leg.split(",")[0]);
+					if(connectFlightNumber.contains(fNum))
+					{
+						foo.add(fNum);
+						if(leg.split(",")[1].equals("1"))
+							leg1 = true;
+						else if(leg.split(",")[1].equals("2"))
+							leg2 = true;
+							
+						if(leg1 && leg2)
+							break;
+					}
+				}
+				if(!leg1 || !leg2)
+				{
+					for(Integer i: foo)
+					{
+						connectFlightNumber.remove(i);
+					}
+				}
+			}
+			
+			//supply all the info for direct flights and connecting flights
+			System.out.println("All flights with available seats:\nflight number, airline id, departure_city, arrival_city, departure_time, arrival_time");
+			for(Integer i : flightNums)
+			{
+				query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
+				resultSet = statement.executeQuery(query);
+			
+				if(resultSet.next()) {
+					System.out.println(resultSet.getInt(1)+" , "+ 
+										resultSet.getInt(2)+" , "+
+										resultSet.getString(3)+" , "+
+										resultSet.getString(4)+" , "+
+										resultSet.getString(5)+" , "+
+										resultSet.getString(6));
+				}
+				resultSet.close();
+			}
+			
+			for(Integer i : connectFlightNumber)
+			{
+				query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
+				resultSet = statement.executeQuery(query);
+			
+				if(resultSet.next()) {
+					System.out.println(resultSet.getInt(1)+" , "+ 
+										resultSet.getInt(2)+" , "+
+										resultSet.getString(3)+" , "+
+										resultSet.getString(4)+" , "+
+										resultSet.getString(5)+" , "+
+										resultSet.getString(6));
+				}
+				resultSet.close();
+			}
+			
+			
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		finally
+		{
+			try {
+				if (statement != null) statement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
+		}
+	}
+	
 	//Function: findAvailableSeatsByRoute
 	//inputs: none
 	//outputs: none
@@ -1007,22 +1249,6 @@ public class PittToursMenu
 		}
 	}
 	
-	//Function: findAvailableSeatsByAirline
-	//inputs: none
-	//outputs: none
-	/*Description:
-	For a given airline, find all routes with available seats between two cities on given date
-	Ask the user to supply the departure city, the arrival city, the date and the name of the airline.
-	Same with the previous task, print a list of airline id, flight number, departure, city,
-	departure time, and arrival time for all available routes.
-
-	Note that this might be the most difficult query of the project. You need to build upon
-	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
-	route and one of the two flights has available seats, while the other one does not*/
-	public void findAvailableSeatsByAirline()
-	{
-	}
-	
 	//Function: addReservation
 	//inputs: none
 	//outputs: none
@@ -1039,6 +1265,7 @@ public class PittToursMenu
 	print an error message*/
 	public void addReservation()
 	{
+		System.out.println("COMING SOON");
 		/*int[] flight = new int[4];
 		java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy/MM/dd");
 		java.sql.Date[] date_reg = new java.sql.Date[4];
@@ -1082,37 +1309,7 @@ public class PittToursMenu
 			System.out.println(e);
 		}*/
 		
-		
-		/*try{
-			int numReservations = 0;
-			connection.setAutoCommit(false); 
-			connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED); 
-			statement = connection.createStatement();
-	    
-			query = "select count(reservation_number) from (flight natural join reservation_detail) where flight_number = \'"+flight[0]+"\'";
-			resultSet = statement.executeQuery(query);
-			
-			if(resultSet.next()) {	
-				numReservations = resultSet.getInt(0);
-			}
-			resultSet.close();
-
-			
-			connection.commit();
-			resultSet.close();
-		}	
-		catch(Exception Ex) {
-			System.out.println("Machine Error: " +
-					Ex.toString());
-		}
-		finally{
-			try {
-				if (statement !=null) statement.close();
-			} catch (SQLException e) {
-				System.out.println("Cannot close Statement. Machine error: "+e.toString());
-			}
-		}
-		}*/
+		//TO DO: DB PART
 	}
 	
 	//Function: showReservationByNumber
@@ -1245,12 +1442,11 @@ public class PittToursMenu
 	{		
 		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
 
-
 		System.out.println("Welcome to PittFlights...");
 
 		String username,password;
-		username = "anp147"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "3858766";
+		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "password";
 		
 		try
 		{
