@@ -658,6 +658,7 @@ public class PittToursMenu
 		
 			
 			//Check to see if there is a seat available
+			ArrayList<Integer> removeFlights = new ArrayList<Integer>();
 			for(Integer i : flightNums)
 			{
 				int planeCap = 0;
@@ -669,17 +670,18 @@ public class PittToursMenu
 				}
 				resultSet.close();
 				
-				query = "select count(reservation_number) from flight natural join reservation_detail where flight_number = \'"+i+"\'";
+				query = "select count(reservation_number) from flight natural join reservation_detail where flight_number = \'"+i+"\' and flight_date = TO_DATE(\'"+date1+"\',\'yyyy/MM/dd\')";
 				resultSet = statement.executeQuery(query);
 			
 				if(resultSet.next()) {
 					if(resultSet.getInt(1) >= planeCap)
 					{
-						flightNums.remove(i);
+						removeFlights.add(i);
 					}
 				}
 				resultSet.close();
 			}
+			flightNums.removeAll(removeFlights);
 			
 			//Find all flights that have the start location or end location
 			query = "select flight_number, departure_city, arrival_city, weekly_schedule from flight where departure_city = \'"+dc+"\' or arrival_city = \'"+ac+"\'";
@@ -729,6 +731,7 @@ public class PittToursMenu
 			resultSet.close();
 			
 			//Check to see if there is a seat available
+			removeFlights = new ArrayList<Integer>();
 			for(Integer i : connectFlightNumber)
 			{
 				int planeCap = 0;
@@ -740,17 +743,18 @@ public class PittToursMenu
 				}
 				resultSet.close();
 				
-				query = "select count(reservation_number) from flight natural join reservation_detail where flight_number = \'"+i+"\'";
+				query = "select count(reservation_number) from flight natural join reservation_detail where flight_number = \'"+i+"\' and flight_date = TO_DATE(\'"+date1+"\',\'yyyy/MM/dd\')";
 				resultSet = statement.executeQuery(query);
 			
 				if(resultSet.next()) {
 					if(resultSet.getInt(1) >= planeCap)
 					{
-						connectFlightNumber.remove(i);
+						removeFlights.add(i);
 					}
 				}
 				resultSet.close();
 			}
+			connectFlightNumber.removeAll(removeFlights);
 			
 			//Check to see if the flights connect
 			for(String key: connections.keySet())
@@ -1071,8 +1075,8 @@ public class PittToursMenu
 		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
 		
 		String username,password;
-		username = "ahf5"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "13+SCtoPITT+17";
+		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "password";
 		
 		try{
 			// Register the oracle driver.  
