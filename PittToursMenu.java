@@ -18,6 +18,7 @@ public class PittToursMenu
 	//BELOW: the db setup variable from recitation 8 (TranDemo1.java)
 	private static Connection connection; //used to hold the jdbc connection to the DB
     private Statement statement; //used to create an instance of the connection
+	private CallableStatement callStatement; //used to get return values
     private PreparedStatement prepStatement; //used to create a prepared statement, that will be later reused
     private ResultSet resultSet; //used to hold the result of your query (if one
     // exists)
@@ -360,6 +361,62 @@ public class PittToursMenu
 	//Description: 
 	public void generateManifest()
 	{
+		String flightNumber = "";
+		String flightDate = "";
+
+		System.out.print("Please enter the flight number to generate manifest for: ");
+		flightNumber = keyboard.nextLine();
+
+		System.out.print("Please enter the flight date to generate manifest in the format (DD-MM-YY): ");
+		flightDate = keyboard.nextLine();
+
+		//Perform data input checking
+		if (flightNumber.length() > 0 && flightDate.length() > 0)
+		{
+
+			System.out.println("\nFetching manifest for flight # " + flightNumber + " on " + flightDate + " ...");
+			try
+			{
+				query = "SELECT * FROM passengerManifest WHERE flight_number = ? AND flight_date = ?";
+				prepStatement = connection.prepareStatement(query);
+				prepStatement.setString(1, flightNumber+"");
+				prepStatement.setString(2,flightDate+"");
+				resultSet = prepStatement.executeQuery();
+
+
+				int i = 0;
+				final Object[][] table = new String[4][];
+				table[i++] = new String[] { "Salutation", "First Name", "Last Name" };
+
+				while (resultSet.next())
+				{
+					table[i++] = new String[] {resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name")};
+				}
+
+				for (final Object[] row : table)
+				{
+					System.out.format("%15s%15s%15s\n", row);
+				}
+
+				System.out.println("\n\n\n");
+
+				resultSet.close();
+
+			} catch (Exception e) {
+				System.out.print(e);
+			} finally {
+				try {
+					if (statement != null) statement.close();
+					if (prepStatement != null) prepStatement.close();
+				} catch (SQLException e) {
+					System.out.println("Cannot close Statement. Machine error: " + e.toString());
+				}
+			}
+		}
+		else
+		{
+			System.out.println("ERROR: Invalid entry of flight number or flight date. Aborting manifest generation\n\n\n");
+		}
 	}
 	
 	//Function: AdminPrivileges
@@ -511,18 +568,25 @@ public class PittToursMenu
 	//inputs: none
 	//outputs: none
 	/*Description:
-	Ask the user to supply the departure city and the arrival city. Query the schedule database
-	and find all possible one-way routes between the given city combination. Print a list of
+	Ask the user to supply the departure city and the arrival city.
+	Query the schedule database
+	and find all possible one-way routes between the given city combination.
+	Print a list of
 	flight number, departure, city, departure time, and arrival time for all routes.
-	Direct routes are trivial. In addition to direct routes, we also allow routes with only one
+
+	Direct routes are trivial.
+
+	In addition to direct routes, we also allow routes with only one
 	connection (i.e. two flights in the route). However, for a connection between two flights to
 	be valid, both flights must be operating the same day at least once a week (when looking at
 	their weekly schedules) and, also, the arrival time of the first flight must be at least one hour
 	before the departure time of the second flight.
+
 	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
 	routes, and one that finds and prints the routes with one connection.*/
 	public void findAllRoutes()
 	{
+		//
 	}
 	
 	//Function: findAllRoutesByAirline
@@ -572,6 +636,7 @@ public class PittToursMenu
 	Ask the user to supply the departure city, the arrival city, the date and the name of the airline.
 	Same with the previous task, print a list of airline id, flight number, departure, city,
 	departure time, and arrival time for all available routes.
+
 	Note that this might be the most difficult query of the project. You need to build upon
 	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
 	route and one of the two flights has available seats, while the other one does not*/
@@ -598,7 +663,7 @@ public class PittToursMenu
 	}
 	
 	//Function: showReservationByNumber
-	//inputs: none
+	//inputs: the reservation number
 	//outputs: none
 	/*Description:
 	Ask the user to supply the reservation number.
@@ -606,6 +671,61 @@ public class PittToursMenu
 	Print an error message in case of an non-existent reservation number.*/
 	public void showReservationByNumber()
 	{
+		String reservationNumber = "";
+
+		System.out.print("Please enter the reservation number to generate manifest for: ");
+		reservationNumber = keyboard.nextLine();
+
+		//Perform data input checking
+		if (reservationNumber.length() > 0)
+		{
+
+			System.out.println("\nFetching reservation flight reservation # " + reservationNumber + " ...");
+			try
+			{
+				query = "SELECT * FROM ReservationFlightInfo WHERE Reservation_Number = ?";
+				prepStatement = connection.prepareStatement(query);
+				prepStatement.setString(1, reservationNumber+"");
+				resultSet = prepStatement.executeQuery();
+
+				if (resultSet.getFetchSize() != 0) {
+
+					int i = 0;
+					final Object[][] table = new String[4][];
+					table[i++] = new String[]{"Flight #", "Dept City", "Dept Time", "Arr City", "Arr Time"};
+
+					while (resultSet.next()) {
+						table[i++] = new String[]{resultSet.getString("FLIGHT_NUMBER"), resultSet.getString("DEPARTURE_CITY"), resultSet.getString("DEPARTURE_TIME"), resultSet.getString("ARRIVAL_CITY"), resultSet.getString("ARRIVAL_TIME")};
+					}
+
+					for (final Object[] row : table) {
+						System.out.format("%15s%15s%15s%15s%15s\n", row);
+					}
+
+					System.out.println("\n\n\n");
+				}
+				else
+				{
+					System.out.println("ERROR: There were no flights found for that reservation number!\n\n\n");
+				}
+
+				resultSet.close();
+
+			} catch (Exception e) {
+				System.out.print(e);
+			} finally {
+				try {
+					if (statement != null) statement.close();
+					if (prepStatement != null) prepStatement.close();
+				} catch (SQLException e) {
+					System.out.println("Cannot close Statement. Machine error: " + e.toString());
+				}
+			}
+		}
+		else
+		{
+			System.out.println("ERROR: Invalid entry of flight number. Aborting reservation info lookup\n\n\n");
+		}
 	}
 	
 	//Function: buyTicket
@@ -616,6 +736,61 @@ public class PittToursMenu
 	Mark the fact that the reservation was converted into a purchased ticket*/
 	public void buyTicket()
 	{
+		String selection = "";
+		int updatedRows = 0;
+		System.out.print("Please enter the reservation number: ");
+		selection = keyboard.nextLine();
+
+		//Ensuring reservation number is within length constraints
+		if(selection.length() > 0 && selection.length() <= 5)
+		{
+			System.out.println("Attempting to mark reservation " + selection + " as purchased...");
+			try
+			{
+				callStatement = connection.prepareCall("{call purchaseTicket(?,?)}");
+				callStatement.setString(1, selection);
+				callStatement.registerOutParameter(2, Types.INTEGER);
+				callStatement.execute();
+				updatedRows = callStatement.getInt(2);
+				callStatement.close();
+
+			}
+			catch(Exception e)
+			{
+				System.out.println("Encountered an unexpected error while attempting to mark reservation as purchased:");
+				System.out.print(e);
+			}
+			finally
+			{
+				try
+				{
+					if (statement != null) statement.close();
+					if (callStatement != null) callStatement.close();
+				}
+				catch (SQLException e)
+				{
+					System.out.println("Cannot close Statement. Machine error: "+e.toString());
+				}
+			}
+
+			if (updatedRows == 1)
+			{
+				System.out.println("Reservation marked as purchased SUCCESSFULLY!");
+			}
+			else if (updatedRows == 0)
+			{
+				System.out.println("Reservation marked as purchased FAILED! That reservation does not exist");
+			}
+			else
+			{
+				System.out.println("Reservation marked as purchased FAILED! Number of rows updated: " + updatedRows);
+			}
+
+		}
+		else
+		{
+			System.out.println("ERROR: Reservation numbers are between 1 and 5 characters. Returning to main menu....\n\n\n");
+		}
 	}
 
 	public static void main(String[] args) throws SQLException
@@ -632,7 +807,7 @@ public class PittToursMenu
 
 			//This is the location of the database.  This is the database in oracle
 			//provided to the class
-			String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass"; 
+			String url = "jdbc:oracle:thin:@class3.cs.pitt.edu:1521:dbclass";
 	    
 			//create a connection to DB on class3.cs.pitt.edu
 			connection = DriverManager.getConnection(url, username, password); 
@@ -641,8 +816,9 @@ public class PittToursMenu
 			PittToursMenu menu = new PittToursMenu();
 		}
 		catch(Exception Ex)  {
-			System.out.println("Error connecting to database.  Machine Error: " +
-			       Ex.toString());
+			System.out.println("Error connecting to database.  Machine Error: ");
+
+			Ex.printStackTrace();
 		}
 		finally
 		{
