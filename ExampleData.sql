@@ -2,6 +2,7 @@
 /* Generate the data to represent at least 300 reservations, 100 flights. */
 
 /* 10 Airlines*/
+SET TRANSACTION Name 'InsertAirlines';
 INSERT INTO AIRLINE VALUES ('1', 'Alaska', 'AS', 1926);
 INSERT INTO AIRLINE VALUES ('2', 'Allegiant', 'G4', 1997);
 INSERT INTO AIRLINE VALUES ('3', 'American Airlines', 'AA', 1926);
@@ -12,8 +13,10 @@ INSERT INTO AIRLINE VALUES ('7', 'SouthWest Airlines', 'WN', 1967);
 INSERT INTO AIRLINE VALUES ('8', 'Spirit', 'NK', 1980);
 INSERT INTO AIRLINE VALUES ('9', 'United Airlines', 'UA', 1926);
 INSERT INTO AIRLINE VALUES ('10', 'Virgin Airlines', 'VX', 2004);
+COMMIT;
 
 /* 30 Planes */
+SET TRANSACTION Name 'InsertPlanes';
 INSERT INTO PLANE VALUES ('B707', 'Boeing', 140, TO_DATE('2000/01/01', 'yyyy/mm/dd'), 1980, 1);
 INSERT INTO PLANE VALUES ('B717', 'Boeing', 123, TO_DATE('2000/01/02', 'yyyy/mm/dd'), 1999, 1);
 INSERT INTO PLANE VALUES ('B727', 'Boeing', 131, TO_DATE('2000/01/03', 'yyyy/mm/dd'), 2015, 1);
@@ -53,9 +56,11 @@ INSERT INTO PLANE VALUES ('BC30', 'Bombardier', 45, TO_DATE('2000/01/27', 'yyyy/
 INSERT INTO PLANE VALUES ('BC60', 'Bombardier', 40, TO_DATE('2000/01/28', 'yyyy/mm/dd'), 2000, 10);
 INSERT INTO PLANE VALUES ('BC85', 'Bombardier', 50, TO_DATE('2000/01/29', 'yyyy/mm/dd'), 2000, 10);
 INSERT INTO PLANE VALUES ('BC70', 'Bombardier', 60, TO_DATE('2000/01/30', 'yyyy/mm/dd'), 2000, 10);
+COMMIT;
 
 /* 200 Users */
 /* There are actually 300 here, generated in case the random email string was too long*/
+SET TRANSACTION Name 'InsertUsers';
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (1, 'Mrs', 'Raymond', 'Scott', 'rscott0@princeton.edu', '5291780866776450', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '70 Westridge Park', 'Plano', 'TX', '8887311457', 9);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (2, 'Mrs', 'Amanda', 'Garrett', 'agarrett1@unicef.org', '2928440613182430', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '62 Sachs Center', 'Knoxville', 'TN', '4032217278', 5);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (3, 'Mr', 'Patricia', 'Thompson', 'pthompson2@photobucket.com', '8580009106365810', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '60 Kenwood Circle', 'Indianapolis', 'IN', '1494316302', 10);
@@ -196,7 +201,7 @@ insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (138, 'Ms', 'Frances', 'Ferguson', 'fferguson3t@blog.com', '7124692607929884', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '15172 Bobwhite Place', 'Lancaster', 'CA', '1949746014', 9);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (139, 'Mr', 'Walter', 'Hanson', 'whanson3u@over-blog.com', '1961200449133352', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '500 Randy Avenue', 'Peoria', 'IL', '1905838318', 4);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (140, 'Mrs', 'James', 'Gilbert', 'jgilbert3v@redcross.org', '1695713064973388', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '6 Marcy Parkway', 'Shreveport', 'LA', '3190615836', 6);
-insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (141, 'Mrs', 'Helen', 'James', 'hjames3w@nationalgeographic.com', '2771611825967691', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '30 Sauthoff Road', 'Corpus Christi', 'TX', '8219457888', 4);
+insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (141, 'Mrs', 'Helen', 'James', 'hjames3w@nat.com', '2771611825967691', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '30 Sauthoff Road', 'Corpus Christi', 'TX', '8219457888', 4);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (142, 'Mrs', 'Gerald', 'Peterson', 'gpeterson3x@upenn.edu', '6760087805594687', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '0367 Welch Trail', 'Pocatello', 'ID', '5062409073', 7);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (143, 'Ms', 'Brenda', 'West', 'bwest3y@illinois.edu', '5235031042437940', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '2566 Esker Lane', 'Boca Raton', 'FL', '9955833886', 7);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (144, 'Mr', 'Lori', 'Brooks', 'lbrooks3z@pbs.org', '7429273330766985', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '10 Florence Junction', 'New Castle', 'PA', '5204342032', 7);
@@ -356,8 +361,10 @@ insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (298, 'Mr', 'Jimmy', 'Bradley', 'jbradley89@foxnews.com', '6222346172202348', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '893 Russell Trail', 'Albany', 'GA', '9760588094', 3);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (299, 'Mrs', 'Robert', 'Diaz', 'rdiaz8a@hostgator.com', '4997383546631320', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '45603 Riverside Terrace', 'Mc Keesport', 'PA', '8476937977', 2);
 insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (300, 'Mrs', 'Diana', 'Pierce', 'dpierce8b@cisco.com', '9994776678370594', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '60 Fair Oaks Alley', 'Waco', 'TX', '4722198179', 4);
+COMMIT;
 
 /* 100 Flights (Actually are 300 for good measure) */
+SET TRANSACTION Name 'InsertFlights';
 insert into FLIGHT (Flight_Number, Airline_ID, Plane_Type, Departure_City, Arrival_City, Departure_Time, Arrival_Time, Weekly_Schedule) values (1, 1, 'B707', 'LAX', 'BDL', '244', '2354', '-MTWTF-');
 insert into FLIGHT (Flight_Number, Airline_ID, Plane_Type, Departure_City, Arrival_City, Departure_Time, Arrival_Time, Weekly_Schedule) values (2, 1, 'B717', 'PHI', 'CLE', '639', '2132', '-MTWTF-');
 insert into FLIGHT (Flight_Number, Airline_ID, Plane_Type, Departure_City, Arrival_City, Departure_Time, Arrival_Time, Weekly_Schedule) values (3, 1, 'B727', 'PIT', 'ATL', '1007', '1642', 'S-----S');
@@ -658,8 +665,10 @@ insert into FLIGHT (Flight_Number, Airline_ID, Plane_Type, Departure_City, Arriv
 insert into FLIGHT (Flight_Number, Airline_ID, Plane_Type, Departure_City, Arrival_City, Departure_Time, Arrival_Time, Weekly_Schedule) values (298, 8, 'MD11', 'DFW', 'PHI', '152', '1513', '-MTWTF-');
 insert into FLIGHT (Flight_Number, Airline_ID, Plane_Type, Departure_City, Arrival_City, Departure_Time, Arrival_Time, Weekly_Schedule) values (299, 9, 'MD80', 'BWI', 'LAX', '1019', '1636', 'S-----S');
 insert into FLIGHT (Flight_Number, Airline_ID, Plane_Type, Departure_City, Arrival_City, Departure_Time, Arrival_Time, Weekly_Schedule) values (300, 9, 'MD90', 'ATL', 'PHI', '1155', '1514', '-MTWTF-');
+COMMIT;
 
 /* Prices for flights whose departure city <> arrival city since AirlineID is part of PK now - most fail because I don't have time to go through all of these*/
+SET TRANSACTION Name 'InsertPrice';
 insert into Price (Airline_ID, Departure_City, Arrival_City, Low_Price, High_Price) values (1, 'LAX', 'BWI', 23, 320);
 insert into Price (Airline_ID, Departure_City, Arrival_City, Low_Price, High_Price) values (1, 'PHI', 'JFK', 96, 390);
 insert into Price (Airline_ID, Departure_City, Arrival_City, Low_Price, High_Price) values (1, 'PHI', 'BWI', 82, 363);
@@ -1590,11 +1599,11 @@ insert into Price (Airline_ID, Departure_City, Arrival_City, Low_Price, High_Pri
 insert into Price (Airline_ID, Departure_City, Arrival_City, Low_Price, High_Price) values (3, 'ORD', 'LAX', 36, 382);
 insert into Price (Airline_ID, Departure_City, Arrival_City, Low_Price, High_Price) values (3, 'BDL', 'CLE', 44, 384);
 insert into Price (Airline_ID, Departure_City, Arrival_City, Low_Price, High_Price) values (3, 'LAX', 'CLE', 27, 331);
-
-
+COMMIT;
 
 /* 300 Reservations */
 /* For the first milestone, all of the reservations are single (one way) flights */
+SET TRANSACTION Name 'InsertReservations';
 insert into Reservation (Reservation_Number, CID, Start_City, End_City, Cost, Credit_Card_Num, Reservation_Date, Ticketed) values (1, 1, 'LAX', 'BDL', 459.93, '8965340581102068', TO_DATE('2016/11/17', 'yyyy/mm/dd'), 'N');
 insert into Reservation (Reservation_Number, CID, Start_City, End_City, Cost, Credit_Card_Num, Reservation_Date, Ticketed) values (2, 2, 'PHI', 'CLE', 655.02, '1141150002544888', TO_DATE('2016/11/17', 'yyyy/mm/dd'), 'N');
 insert into Reservation (Reservation_Number, CID, Start_City, End_City, Cost, Credit_Card_Num, Reservation_Date, Ticketed) values (3, 3, 'PIT', 'ATL', 772.69, '6624195554568610', TO_DATE('2016/11/17', 'yyyy/mm/dd'), 'N');
@@ -1895,7 +1904,9 @@ insert into Reservation (Reservation_Number, CID, Start_City, End_City, Cost, Cr
 insert into Reservation (Reservation_Number, CID, Start_City, End_City, Cost, Credit_Card_Num, Reservation_Date, Ticketed) values (298, 298, 'JFK', 'BWI', 873.74, '9150999550119715', TO_DATE('2016/11/17', 'yyyy/mm/dd'), 'Y');
 insert into Reservation (Reservation_Number, CID, Start_City, End_City, Cost, Credit_Card_Num, Reservation_Date, Ticketed) values (299, 299, 'PHI', 'LAX', 215.51, '5092570199690146', TO_DATE('2016/11/17', 'yyyy/mm/dd'), 'N');
 insert into Reservation (Reservation_Number, CID, Start_City, End_City, Cost, Credit_Card_Num, Reservation_Date, Ticketed) values (300, 300, 'PHI', 'BWI', 193.01, '8415072889097050', TO_DATE('2016/11/17', 'yyyy/mm/dd'), 'N');
+COMMIT;
 
+SET TRANSACTION Name 'InsertReservationDetials';
 insert into Reservation_Detail (Reservation_Number, Flight_Number, Flight_Date, Leg) values (1, 1, TO_DATE('2016/11/18', 'yyyy/mm/dd'), 0);
 insert into Reservation_Detail (Reservation_Number, Flight_Number, Flight_Date, Leg) values (2, 2, TO_DATE('2016/11/18', 'yyyy/mm/dd'), 0);
 insert into Reservation_Detail (Reservation_Number, Flight_Number, Flight_Date, Leg) values (3, 3, TO_DATE('2016/11/18', 'yyyy/mm/dd'), 0);
@@ -2196,3 +2207,4 @@ insert into Reservation_Detail (Reservation_Number, Flight_Number, Flight_Date, 
 insert into Reservation_Detail (Reservation_Number, Flight_Number, Flight_Date, Leg) values (298, 27, TO_DATE('2016/11/18', 'yyyy/mm/dd'), 0);
 insert into Reservation_Detail (Reservation_Number, Flight_Number, Flight_Date, Leg) values (299, 28, TO_DATE('2016/11/18', 'yyyy/mm/dd'), 0);
 insert into Reservation_Detail (Reservation_Number, Flight_Number, Flight_Date, Leg) values (300, 30, TO_DATE('2016/11/18', 'yyyy/mm/dd'), 0);
+COMMIT;
