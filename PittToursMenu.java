@@ -383,19 +383,11 @@ public class PittToursMenu
 				prepStatement.setString(2,flightDate+"");
 				resultSet = prepStatement.executeQuery();
 
-
-				int i = 0;
-				final Object[][] table = new String[4][];
-				table[i++] = new String[] { "Salutation", "First Name", "Last Name" };
+				System.out.format("%15s%15s%15s\n", new String[] { "Salutation", "First Name", "Last Name" });
 
 				while (resultSet.next())
 				{
-					table[i++] = new String[] {resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name")};
-				}
-
-				for (final Object[] row : table)
-				{
-					System.out.format("%15s%15s%15s\n", row);
+					System.out.format("%15s%15s%15s\n", new String[] {resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name")});
 				}
 
 				System.out.println("\n\n\n");
@@ -636,18 +628,13 @@ public class PittToursMenu
 				prepStatement.setString(1, reservationNumber+"");
 				resultSet = prepStatement.executeQuery();
 
-				if (resultSet.getFetchSize() != 0) {
+				if (resultSet.getFetchSize() != 0)
+				{
 
-					int i = 0;
-					final Object[][] table = new String[4][];
-					table[i++] = new String[]{"Flight #", "Dept City", "Dept Time", "Arr City", "Arr Time"};
+					System.out.format("%15s%15s%15s%15s%15s\n", new String[]{"Flight #", "Dept City", "Dept Time", "Arr City", "Arr Time"});
 
 					while (resultSet.next()) {
-						table[i++] = new String[]{resultSet.getString("FLIGHT_NUMBER"), resultSet.getString("DEPARTURE_CITY"), resultSet.getString("DEPARTURE_TIME"), resultSet.getString("ARRIVAL_CITY"), resultSet.getString("ARRIVAL_TIME")};
-					}
-
-					for (final Object[] row : table) {
-						System.out.format("%15s%15s%15s%15s%15s\n", row);
+						System.out.format("%15s%15s%15s%15s%15s\n", new String[]{resultSet.getString("FLIGHT_NUMBER"), resultSet.getString("DEPARTURE_CITY"), resultSet.getString("DEPARTURE_TIME"), resultSet.getString("ARRIVAL_CITY"), resultSet.getString("ARRIVAL_TIME")});
 					}
 
 					System.out.println("\n\n\n");
