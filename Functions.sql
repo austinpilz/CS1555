@@ -52,8 +52,19 @@ RIGHT JOIN
 /* Assumptions - This doesn't need to be a procedure because is a simple insert statement where we should have all of the data already, no additional lookup
 is required*/
 
+CREATE OR REPLACE PROCEDURE generateCustomerID(ID OUT INT)
+AS
+BEGIN
+  BEGIN
+      select dbms_random.value(100000000, 999999999) num into ID from dual;
+    END;
+END;
+/
+
+
 /* 8 - Customer Info (Austin) */
 /* Given customer name, display customer information */
+/* In JAVA */
 
 /* 9 - Flight Price */
 /* Find price for flight between two cities */
@@ -72,7 +83,7 @@ is required*/
 
 /* 14 - Add Resveration */
 
-/* 15 - Reservation Info (Austin) */
+/* 15 - Reservation Info (Austin) (DONE) */
 /* Given reservation number, display reservation information */
 /* Query the database to get all the flights for the given reservation and print this to the user. Print an error message in case of an non-existent reservation number. */
 CREATE OR REPLACE VIEW reservationFlightInfo AS
@@ -80,7 +91,8 @@ Select rd.Reservation_Number, f.Flight_Number, f.Departure_City, f.Departure_Tim
 RIGHT JOIN Flight f
 ON rd.FLIGHT_NUMBER = f.FLIGHT_NUMBER;
 
-/* To Use: SELECT * FROM ReservationFlightInfo WHERE Reservation_Number = '1'; */
+/* To Use: SELECT * FROM ReservationFlightInfo WHERE Reservation_Number = '9999'; */
+
 
 /* 16 - Buy Ticket (Austin) (DONE) */
 /* Ask the user to supply the reservation number. Mark the fact that the reservation was converted into a purchased ticket. */
