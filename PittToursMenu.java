@@ -862,8 +862,8 @@ public class PittToursMenu
 		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
 		
 		String username,password;
-		username = "ahf5"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "13+SCtoPITT+17";
+		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "password";
 		
 		try{
 			// Register the oracle driver.  
