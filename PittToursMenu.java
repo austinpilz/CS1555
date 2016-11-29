@@ -457,9 +457,9 @@ public class PittToursMenu
 	{
 		String city1, city2;
 		System.out.print("Please enter the three-letter airport code of the city: ");
-		city1 = keyboard.nextLine();
+		city1 = keyboard.nextLine().toUpperCase();
 		System.out.print("Please enter the three-letter airport code of the city: ");
-		city2 = keyboard.nextLine();
+		city2 = keyboard.nextLine().toUpperCase();
 		
 		try
 		{
