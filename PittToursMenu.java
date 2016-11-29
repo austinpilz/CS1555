@@ -625,7 +625,6 @@ public class PittToursMenu
 	*/
 	public void findAvailableSeats()
 	{
-		System.out.print("Please enter ");
 	}
 	
 	//Function: findAvailableSeatsByAirline
