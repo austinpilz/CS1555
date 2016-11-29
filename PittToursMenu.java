@@ -200,8 +200,8 @@ public class PittToursMenu
 			while(br.ready())
 			{
 				String[] line = br.readLine().split(",");
-				prepStatement.setString(1, line[0]); 
-				prepStatement.setString(2, line[1]);
+				prepStatement.setInt(1, Integer.parseInt(line[0])); 
+				prepStatement.setInt(2, Integer.parseInt(line[1]));
 				prepStatement.setString(3, line[2]);
 				prepStatement.setString(4, line[3]);
 				prepStatement.setString(5, line[4]);
@@ -216,8 +216,8 @@ public class PittToursMenu
 			System.out.println("\nAfter the insert, data is...\n");
 			while(resultSet.next()) {
 			System.out.println(
-				resultSet.getString(1) + ", " +
-				resultSet.getString(2) + ", " +
+				resultSet.getInt(1) + ", " +
+				resultSet.getInt(2) + ", " +
 				resultSet.getString(3) + ", " +
 				resultSet.getString(4) + ", " +
 				resultSet.getString(5) + ", " +
@@ -316,28 +316,32 @@ public class PittToursMenu
 			while(br.ready())
 			{
 				String[] line = br.readLine().split(",");
-				java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd");
-				java.sql.Date date_reg = new java.sql.Date (df.parse(line[3]).getTime());
-				
-				prepStatement.setString(1, line[0]); 
-				prepStatement.setString(2, line[1]);
-				prepStatement.setInt(3, Integer.parseInt(line[2]));
-				prepStatement.setDate(4, date_reg);
-				prepStatement.setInt(5, Integer.parseInt(line[4]));
-				prepStatement.setString(6, line[5]);
-				prepStatement.executeUpdate();
+				if(line.length == 6)
+				{
+					java.sql.Date date_reg = java.sql.Date.valueOf(line[3]);
+					
+					prepStatement.setString(1, line[0]); 
+					prepStatement.setString(2, line[1]);
+					prepStatement.setInt(3, Integer.parseInt(line[2]));
+					prepStatement.setDate(4, date_reg);
+					prepStatement.setInt(5, Integer.parseInt(line[4]));
+					prepStatement.setString(6, line[5]);
+
+					prepStatement.executeUpdate();
+				}
 			}
 			
 			statement = connection.createStatement();
-			resultSet = statement.executeQuery("select * from price");
+			resultSet = statement.executeQuery("select * from plane");
 			System.out.println("\nAfter the insert, data is...\n");
 			while(resultSet.next()) {
 			System.out.println(
 				resultSet.getString(1) + ", " +
 				resultSet.getString(2) + ", " +
 				resultSet.getInt(3) + ", " +
-				resultSet.getInt(4) + ", " +
-				resultSet.getInt(5));
+				resultSet.getDate(4) + ", " + 
+				resultSet.getInt(5) + ", " +
+				resultSet.getString(6));
 			}
 			resultSet.close();
 		}
@@ -659,6 +663,80 @@ public class PittToursMenu
 	print an error message*/
 	public void addReservation()
 	{
+		/*int[] flight = new int[4];
+		java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy/MM/dd");
+		java.sql.Date[] date_reg = new java.sql.Date[4];
+		
+		try{
+		System.out.print("Please enter the flight number of first leg: ");
+		flight[0] = Integer.parseInt(keyboard.nextLine());
+		
+		if(flight[0] != 0)
+		{
+		System.out.print("Please enter the date of the flight in format (yyyy/mm/dd): ");
+		date_reg[0] = df.parse(keyboard.nextLine());
+		System.out.println("DATE: "+date_reg[0]);
+		System.out.print("Please enter the flight number of second leg: ");
+		flight[1] = Integer.parseInt(keyboard.nextLine());
+		if(flight[1] != 0)
+		{
+			System.out.print("Please enter the date of the flight in format (yyyy/mm/dd): ");
+			date_reg[1] = df.parse(keyboard.nextLine());
+			System.out.print("Please enter the flight number of third leg: ");
+			flight[2] = Integer.parseInt(keyboard.nextLine());
+			
+			if(flight[2] != 0)
+			{
+				System.out.print("Please enter the date of the flight in format (yyyy/mm/dd): ");
+				date_reg[2] = df.parse(keyboard.nextLine());
+				System.out.print("Please enter the flight number of fourth leg: ");
+				flight[3] = Integer.parseInt(keyboard.nextLine());
+				
+				if(flight[3] != 0)
+				{
+					System.out.print("Please enter the date of the flight in format (yyyy/mm/dd): ");
+					date_reg[3] = df.parse(keyboard.nextLine());
+				}
+			}
+		}
+		}
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}*/
+		
+		
+		/*try{
+			int numReservations = 0;
+			connection.setAutoCommit(false); 
+			connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED); 
+			statement = connection.createStatement();
+	    
+			query = "select count(reservation_number) from (flight natural join reservation_detail) where flight_number = \'"+flight[0]+"\'";
+			resultSet = statement.executeQuery(query);
+			
+			if(resultSet.next()) {	
+				numReservations = resultSet.getInt(0);
+			}
+			resultSet.close();
+
+			
+			connection.commit();
+			resultSet.close();
+		}	
+		catch(Exception Ex) {
+			System.out.println("Machine Error: " +
+					Ex.toString());
+		}
+		finally{
+			try {
+				if (statement !=null) statement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
+		}
+		}*/
 	}
 	
 	//Function: showReservationByNumber
@@ -797,8 +875,8 @@ public class PittToursMenu
 		/*NOTE: the majority of the database setup code is from recitation 8 TranDemo1*/
 		
 		String username,password;
-		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "password";
+		username = "ahf5"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "13+SCtoPITT+17";
 		
 		try{
 			// Register the oracle driver.  
