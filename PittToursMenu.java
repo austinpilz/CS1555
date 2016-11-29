@@ -395,7 +395,7 @@ public class PittToursMenu
 					findAllRoutesByAirline();
 					break;
 				case 6:
-					findAvailableSeatsByRoute();
+					findAvailableSeats();
 					break;
 				case 7: 
 					findAvailableSeatsByAirline();
@@ -544,6 +544,7 @@ public class PittToursMenu
 	routes, and one that finds and prints the routes with one connection.*/
 	public void findAllRoutesByAirline()
 	{
+
 	}
 	
 	//Function: findAvailableSeatsByRoute
@@ -558,8 +559,9 @@ public class PittToursMenu
 	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
 	route and one of the two flights has available seats, while the other one does not.
 	*/
-	public void findAvailableSeatsByRoute()
+	public void findAvailableSeats()
 	{
+		System.out.print("Please enter ");
 	}
 	
 	//Function: findAvailableSeatsByAirline
