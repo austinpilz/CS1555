@@ -73,19 +73,39 @@ public class PittToursMenu
 					}
 					break;
 				case 2:
-					loadAirline();
+					sel = "";
+					System.out.print("Please enter the location of the .csv file: ");
+					sel = keyboard.nextLine();
+					loadAirline(sel);
 					break;
 				case 3:
-					loadSchedule();
+					sel = "";
+					System.out.print("Please enter the location of the .csv file: ");
+					sel = keyboard.nextLine();
+					loadSchedule(sel);
 					break;
 				case 4:
-					loadPricing();
+					sel = "";
+					System.out.print("Please enter the location of the .csv file: ");
+					sel = keyboard.nextLine();
+					loadPricing(sel);
 					break;
 				case 5:
-					loadPlaneInfo();
+					sel = "";
+					System.out.print("Please enter the location of the .csv file: ");
+					sel = keyboard.nextLine();
+					loadPlaneInfo(sel);
 					break;
 				case 6: 
-					generateManifest();
+					String flightNumber = "";
+					String flightDate = "";
+
+					System.out.print("Please enter the flight number to generate manifest for: ");
+					flightNumber = keyboard.nextLine();
+
+					System.out.print("Please enter the flight date to generate manifest in the format (DD-MM-YY): ");
+					flightDate = keyboard.nextLine();
+					generateManifest(flightNumber, flightDate);
 					break;
 				case 7:
 					exit = true;
@@ -128,16 +148,12 @@ public class PittToursMenu
 	}
 	
 	//Function: loadAirline
-	//inputs: none
+	//inputs: String selection -> the file location
 	//outputs: none
 	//Description: Asks user for .csv file which has ariline info
 	//inserts it into the database
-	public void loadAirline()
-	{
-		String selection = "";
-		System.out.print("Please enter the location of the .csv file: ");
-		selection = keyboard.nextLine();
-				
+	public void loadAirline(String selection)
+	{			
 		try
 		{
 			query = "insert into airline values (?,?,?,?)";
@@ -181,16 +197,12 @@ public class PittToursMenu
 	}
 	
 	//Function: loadSchedule
-	//inputs: none
+	//inputs: String selection -> the file location
 	//outputs: none
 	//Description: Asks user for .csv file which has schedule info
 	//inserts it into the database
-	public void loadSchedule()
-	{
-		String selection = "";
-		System.out.print("Please enter the location of the .csv file: ");
-		selection = keyboard.nextLine();
-		
+	public void loadSchedule(String selection)
+	{	
 		try
 		{
 			query = "insert into flight values (?,?,?,?,?,?,?,?)";
@@ -242,16 +254,12 @@ public class PittToursMenu
 	}
 	
 	//Function: loadPricing
-	//inputs: none
+	//inputs: String selection
 	//outputs: none
 	//Description: Asks user for .csv file which has pricing info
 	//inserts it into the database
-	public void loadPricing()
+	public void loadPricing(String selection)
 	{
-		String selection = "";
-		System.out.print("Please enter the location of the .csv file: ");
-		selection = keyboard.nextLine();
-		
 		try
 		{
 			query = "insert into price values (?,?,?,?,?)";
@@ -301,12 +309,8 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has plane info
 	//inserts it into the database
-	public void loadPlaneInfo()
+	public void loadPlaneInfo(String selection)
 	{
-		String selection = "";
-		System.out.print("Please enter the location of the .csv file: ");
-		selection = keyboard.nextLine();
-		
 		try
 		{
 			query = "insert into plane values (?,?,?,?,?,?)";
@@ -363,17 +367,8 @@ public class PittToursMenu
 	//inputs: none
 	//outputs: none
 	//Description: 
-	public void generateManifest()
+	public void generateManifest(String flightNumber, String flightDate)
 	{
-		String flightNumber = "";
-		String flightDate = "";
-
-		System.out.print("Please enter the flight number to generate manifest for: ");
-		flightNumber = keyboard.nextLine();
-
-		System.out.print("Please enter the flight date to generate manifest in the format (DD-MM-YY): ");
-		flightDate = keyboard.nextLine();
-
 		//Perform data input checking
 		if (flightNumber.length() > 0 && flightDate.length() > 0)
 		{
