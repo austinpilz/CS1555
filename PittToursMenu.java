@@ -45,6 +45,7 @@ public class PittToursMenu
 	public void AdminPrivileges()
 	{
 		int selection;
+		String sel;
 		boolean exit = false;
 		
 		while(!exit)
@@ -54,7 +55,22 @@ public class PittToursMenu
 			switch(selection)
 			{
 				case 1:
-					eraseDatabase();
+					sel = "";
+					System.out.print("Are you sure? (y/n): ");
+					sel = keyboard.nextLine();
+		
+					if(sel.toLowerCase().equals("y"))
+					{
+						eraseDatabase();
+					}
+					else if(sel.toLowerCase().equals("n"))
+					{
+						System.out.println("The database will remain intact.\nReturning to menu...");
+					}
+					else
+					{
+						System.out.println("ERROR: You did not enter \'y\' or \'n\'. Therefore the database will remain intact.\nReturning to menu...");
+					}
 					break;
 				case 2:
 					loadAirline();
@@ -84,46 +100,30 @@ public class PittToursMenu
 	//Description: Truncates the tables in order to erase the database
 	public void eraseDatabase()
 	{
-		String selection = "";
-		System.out.print("Are you sure? (y/n): ");
-		selection = keyboard.nextLine();
-		
-		if(selection.toLowerCase().equals("y"))
+		try
+		{
+			query = "{call eraseDatabase}";
+			prepStatement = connection.prepareCall(query);
+			statement = connection.createStatement();
+			prepStatement.executeQuery();
+			prepStatement.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println("Encountered an unexpected error while attempting to erase the database:");
+			System.out.print(e);
+		}
+		finally
 		{
 			try
 			{
-				query = "{call eraseDatabase}";
-				prepStatement = connection.prepareCall(query);
-				statement = connection.createStatement();
-				prepStatement.executeQuery();
-				prepStatement.close();
+				if (statement != null) statement.close();
+				if (prepStatement != null) prepStatement.close();
 			}
-			catch(Exception e)
+			catch (SQLException e)
 			{
-				System.out.println("Encountered an unexpected error while attempting to erase the database:");
-				System.out.print(e);
-			}
-			finally
-			{
-				try
-				{
-					if (statement != null) statement.close();
-					if (prepStatement != null) prepStatement.close();
-				}
-				catch (SQLException e)
-				{
 					System.out.println("Cannot close Statement. Machine error: "+e.toString());
-				}
 			}
-
-		}
-		else if(selection.toLowerCase().equals("n"))
-		{
-			System.out.println("The database will remain intact.\nReturning to menu...");
-		}
-		else
-		{
-			System.out.println("ERROR: You did not enter \'y\' or \'n\'. Therefore the database will remain intact.\nReturning to menu...");
 		}
 	}
 	
