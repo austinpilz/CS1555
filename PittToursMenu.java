@@ -86,9 +86,34 @@ public class PittToursMenu
 					break;
 				case 4:
 					sel = "";
-					System.out.print("Please enter the location of the .csv file: ");
-					sel = keyboard.nextLine();
-					loadPricing(sel);
+					String choice = "";
+					System.out.print("Would you like to Load Pricing Info or Change the Price of a route? (L/C): ");
+					choice = keyboard.nextLine();
+					if(choice.equals("L"))
+					{
+						System.out.print("Please enter the location of the .csv file: ");
+						sel = keyboard.nextLine();
+						loadPricing(sel);
+					}
+					else if(choice.equals("C"))
+					{
+						String d,a,hp,lp,airline;
+						System.out.print("Please enter the departure city: ");
+						d = keyboard.nextLine();
+						System.out.print("Please enter the arrival city: ");
+						a = keyboard.nextLine();
+						System.out.print("Please enter the high price: ");
+						hp = keyboard.nextLine();
+						System.out.print("Please enter the low price: ");
+						lp = keyboard.nextLine();
+						System.out.print("Please enter the airline name: ");
+						airline = keyboard.nextLine();
+						changePricing(d,a,Integer.parseInt(hp),Integer.parseInt(lp),airline);
+					}
+					else
+					{
+						System.out.println("ERROR: You did not enter \'L\' or \'C\'. \nReturning to menu...");
+					}
 					break;
 				case 5:
 					sel = "";
@@ -302,6 +327,16 @@ public class PittToursMenu
 				System.out.println("Cannot close Statement. Machine error: "+e.toString());
 			}
 		}
+	}
+	
+		//Function: loadPricing
+	//inputs: departure city, arrival city, high price, low price, and the airline
+	//outputs: none
+	//Description: Changes price of the specified rout if it exists --> had to add airline
+	//because we allowed multiple airlines to service a route, and they might have different prices
+	public void changePricing(String dept_city, String arr_city, int high_price, int low_price, String airline)
+	{
+		//TO DO
 	}
 	
 	//Function: loadPlaneInfo
