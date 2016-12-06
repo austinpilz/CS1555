@@ -445,16 +445,18 @@ public class PittToursMenu
 		}
 	}
 	
-	//Function: AdminPrivileges
+	//Function: Client Privileges
 	//inputs: none
 	//outputs: none
-	//Description: The admin sub-menu for the overall application
+	//Description: The client sub-menu for the overall application
 	//Based on the action the user wants to do, it routes to the correct method
 	//Will loop until user indicates exit
 	public void ClientPrivileges()
 	{
 		int selection;
 		boolean exit = false;
+		String dc, ac, date1, airline;
+		int dayOfWeek = 0;
 		
 		while(!exit)
 		{
@@ -463,34 +465,136 @@ public class PittToursMenu
 			switch(selection)
 			{
 				case 1:
-					addCustomer();
+					String salutation, firstName, lastName, email, phone, ccnum, ccexpire, street, city, state, freqMiles;
+
+					System.out.print("Please enter the customers salutation (Mr/Ms/Mrs): ");
+					salutation = keyboard.nextLine();
+
+					System.out.print("Please enter the customers first name: ");
+					firstName = keyboard.nextLine();
+
+					System.out.print("Please enter the customers last name: ");
+					lastName = keyboard.nextLine();
+
+					System.out.print("Please enter the customers email address: ");
+					email = keyboard.nextLine();
+
+					System.out.print("Please enter the customers phone number (no dashes): ");
+					phone = keyboard.nextLine();
+
+					System.out.print("Please enter the customers street address: ");
+					street = keyboard.nextLine();
+
+					System.out.print("Please enter the customers city: ");
+					city = keyboard.nextLine();
+
+					System.out.print("Please enter the customers state: ");
+					state = keyboard.nextLine();
+
+					System.out.print("Please enter the customers Credit Card number (no dashes) : ");
+					ccnum = keyboard.nextLine();
+
+					System.out.print("Please enter the customers Credit Card expiration date (ex 18-NOV-16): ");
+					ccexpire = keyboard.nextLine();
+
+					System.out.print("Please enter the airline ID of the customers frequent miles program: ");
+					freqMiles = keyboard.nextLine();
+					addCustomer(salutation, firstName, lastName, email, phone, ccnum, ccexpire, street, city, state, freqMiles);
 					break;
 				case 2:
-					showCustomerInfo();
+					System.out.print("Please enter the customers first name: ");
+					firstName = keyboard.nextLine();
+
+					System.out.print("Please enter the customers last name: ");
+					lastName = keyboard.nextLine();
+					showCustomerInfo(firstName, lastName);
 					break;
 				case 3:
-					findPriceByRoute();
+					String city1, city2;
+					System.out.print("Please enter the three-letter airport code of the city: ");
+					city1 = keyboard.nextLine().toUpperCase();
+					System.out.print("Please enter the three-letter airport code of the city: ");
+					city2 = keyboard.nextLine().toUpperCase();
+					findPriceByRoute(city1, city2);
 					break;
 				case 4:
-					findAllRoutes();
+					System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
+					dc = keyboard.nextLine();
+					System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
+					ac = keyboard.nextLine();
+					System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
+					date1 = keyboard.nextLine();
+					try{
+						java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
+						dayOfWeek = date.getDay();
+					}
+					catch(Exception e){
+						System.out.println(e);}
+					findAllRoutes(dc,ac,dayOfWeek);
 					break;
 				case 5:
-					findAllRoutesByAirline();
+					System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
+					dc = keyboard.nextLine();
+					System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
+					ac = keyboard.nextLine();
+					System.out.print("Please enter the airline name: ");
+					airline = keyboard.nextLine();
+					System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
+					date1 = keyboard.nextLine();
+					try{
+						java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
+						dayOfWeek = date.getDay();
+					}
+					catch(Exception e){
+						System.out.println(e);}
+					findAllRoutesByAirline(dc,ac,dayOfWeek,airline);
 					break;
-				case 6:
-					findAvailableSeats();
+				case 6:		
+					System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
+					dc = keyboard.nextLine();
+					System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
+					ac = keyboard.nextLine();
+					System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
+					date1 = keyboard.nextLine();
+					try{
+						java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
+						dayOfWeek = date.getDay();
+					}
+					catch(Exception e){
+						System.out.println(e);}
+					findAvailableSeats(dc, ac, dayOfWeek, date1);
 					break;
 				case 7: 
-					findAvailableSeatsByAirline();
+					System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
+					dc = keyboard.nextLine();
+					System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
+					ac = keyboard.nextLine();
+					System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
+					date1 = keyboard.nextLine();
+					System.out.print("Please enter the name of the airline you wish to fly with: ");
+					airline = keyboard.nextLine();
+					try{
+						java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
+						dayOfWeek = date.getDay();
+					}
+					catch(Exception e){
+						System.out.println(e);}
+					findAvailableSeatsByAirline(dc, ac, dayOfWeek, date1,airline);
 					break;
 				case 8:
 					addReservation();
 					break;
 				case 9:
-					showReservationByNumber();
+					String reservationNumber = "";
+					System.out.print("Please enter the reservation number to generate manifest for: ");
+					reservationNumber = keyboard.nextLine();
+					showReservationByNumber(reservationNumber);
 					break;
 				case 10:
-					buyTicket();
+					String sel = "";
+					System.out.print("Please enter the reservation number: ");
+					sel = keyboard.nextLine();
+					buyTicket(sel);
 					break;
 				case 11:
 					exit = true;
@@ -512,43 +616,8 @@ public class PittToursMenu
 	Insert all the supplied information and the PittRewards number into the database.
 	Display the PittRewards number as a confirmation of successfully adding the new customer
 	in the database*/
-	public void addCustomer()
+	public void addCustomer(String salutation, String firstName, String lastName, String email, String phone, String ccnum, String ccexpire, String street, String city, String  state, String freqMiles)
 	{
-		String salutation, firstName, lastName, email, phone, ccnum, ccexpire, street, city, state, freqMiles;
-
-		System.out.print("Please enter the customers salutation (Mr/Ms/Mrs): ");
-		salutation = keyboard.nextLine();
-
-		System.out.print("Please enter the customers first name: ");
-		firstName = keyboard.nextLine();
-
-		System.out.print("Please enter the customers last name: ");
-		lastName = keyboard.nextLine();
-
-		System.out.print("Please enter the customers email address: ");
-		email = keyboard.nextLine();
-
-		System.out.print("Please enter the customers phone number (no dashes): ");
-		phone = keyboard.nextLine();
-
-		System.out.print("Please enter the customers street address: ");
-		street = keyboard.nextLine();
-
-		System.out.print("Please enter the customers city: ");
-		city = keyboard.nextLine();
-
-		System.out.print("Please enter the customers state: ");
-		state = keyboard.nextLine();
-
-		System.out.print("Please enter the customers Credit Card number (no dashes) : ");
-		ccnum = keyboard.nextLine();
-
-		System.out.print("Please enter the customers Credit Card expiration date (ex 18-NOV-16): ");
-		ccexpire = keyboard.nextLine();
-
-		System.out.print("Please enter the airline ID of the customers frequent miles program: ");
-		freqMiles = keyboard.nextLine();
-
 		//Check to make sure there's not already a customer with that first and last name
 		boolean nameExists = false;
 
@@ -651,16 +720,8 @@ public class PittToursMenu
 	Ask the user to supply the customer name.
 	Query the database and print all the information stored for the customer (do not display the
 	information on reservations), including the PittRewards number i.e. the cid.*/
-	public void showCustomerInfo()
+	public void showCustomerInfo(String firstName, String lastName)
 	{
-		String firstName, lastName;
-
-		System.out.print("Please enter the customers first name: ");
-		firstName = keyboard.nextLine();
-
-		System.out.print("Please enter the customers last name: ");
-		lastName = keyboard.nextLine();
-
 		try
 		{
 			query = "SELECT * FROM Customer WHERE FIRST_NAME = ? AND LAST_NAME = ?";
@@ -708,14 +769,8 @@ public class PittToursMenu
 	Print the high and low prices for a one-way ticket from city A to city B, the prices for a
 	one-way ticket from city B to city A, and the prices for a round-trip ticket between city A
 	and city B.*/
-	public void findPriceByRoute()
-	{
-		String city1, city2;
-		System.out.print("Please enter the three-letter airport code of the city: ");
-		city1 = keyboard.nextLine().toUpperCase();
-		System.out.print("Please enter the three-letter airport code of the city: ");
-		city2 = keyboard.nextLine().toUpperCase();
-		
+	public void findPriceByRoute(String city1, String city2)
+	{	
 		try
 		{
 			statement = connection.createStatement();
@@ -782,26 +837,8 @@ public class PittToursMenu
 
 	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
 	routes, and one that finds and prints the routes with one connection.*/
-	public void findAllRoutes()
+	public void findAllRoutes(String dc, String ac, int dayOfWeek)
 	{
-        //USER INPUT
-        String dc, ac, date1;
-        int dayOfWeek = 0;
-
-        System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
-        dc = keyboard.nextLine();
-        System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
-        ac = keyboard.nextLine();
-        System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
-        date1 = keyboard.nextLine();
-        try{
-            java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
-            dayOfWeek = date.getDay();
-        }
-        catch(Exception e){
-            System.out.println(e);}
-
-        //DB INTERACTIONS
         try
         {
             ArrayList<Integer> flightNums = new ArrayList<Integer>();
@@ -958,32 +995,22 @@ public class PittToursMenu
 	before the departure time of the second flight.
 	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
 	routes, and one that finds and prints the routes with one connection.*/
-	public void findAllRoutesByAirline()
+	public void findAllRoutesByAirline(String dc, String ac, int dayOfWeek, String airline_name)
 	{
-		//USER INPUT
-		String dc, ac, date1, airline;
-		int dayOfWeek = 0;
-
-		System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
-		dc = keyboard.nextLine();
-		System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
-		ac = keyboard.nextLine();
-		System.out.print("Please enter the airline ID: ");
-		airline = keyboard.nextLine();
-		System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
-		date1 = keyboard.nextLine();
-		try{
-			java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
-			dayOfWeek = date.getDay();
-		}
-		catch(Exception e){
-			System.out.println(e);}
-
-		//DB INTERACTIONS
 		try
 		{
 			ArrayList<Integer> flightNums = new ArrayList<Integer>();
 			statement = connection.createStatement();
+			
+			//find airline id
+			int airline = 0;
+			query = "select airline_id from airline where airline_name = \'"+airline_name+"\'";
+			resultSet = statement.executeQuery(query);
+			
+			if(resultSet.next()) {
+				airline = resultSet.getInt(1);
+			}
+			resultSet.close();
 
 			//ALL DIRECT FLIGHTS
 			query = "select flight_number, weekly_schedule from flight where departure_city = \'"+dc+"\' AND arrival_city = \'"+ac+"\' AND AIRLINE_ID = \'" + airline + "\'";
@@ -1132,35 +1159,14 @@ public class PittToursMenu
 	Note that this might be the most difficult query of the project. You need to build upon
 	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
 	route and one of the two flights has available seats, while the other one does not*/
-	public void findAvailableSeatsByAirline()
-	{
-		//USER INPUT
-		String dc, ac, date1;
-		int dayOfWeek = 0;
-		String airline;
-		int airline_id = 0;
-		
-		System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
-		dc = keyboard.nextLine();
-		System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
-		ac = keyboard.nextLine();
-		System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
-		date1 = keyboard.nextLine();
-		System.out.print("Please enter the name of the airline you wish to fly with: ");
-		airline = keyboard.nextLine();
-		try{
-			java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
-			dayOfWeek = date.getDay();
-		}
-		catch(Exception e){
-			System.out.println(e);}
-		
-		//DB INTERACTIONS
+	public void findAvailableSeatsByAirline(String dc, String ac, int dayOfWeek, String date1, String airline)
+	{	
 		try
 		{
 			ArrayList<Integer> flightNums = new ArrayList<Integer>();
 			statement = connection.createStatement();
 			//find airline id
+			int airline_id = 0;
 			query = "select airline_id from airline where airline_name = \'"+airline+"\'";
 			resultSet = statement.executeQuery(query);
 			
@@ -1361,7 +1367,7 @@ public class PittToursMenu
 		}
 	}
 	
-	//Function: findAvailableSeatsByRoute
+	//Function: findAvailableSeats
 	//inputs: none
 	//outputs: none
 	/*Description:
@@ -1373,26 +1379,8 @@ public class PittToursMenu
 	the previous task. You need to be careful for the case where we have a non-direct, oneconnection
 	route and one of the two flights has available seats, while the other one does not.
 	*/
-	public void findAvailableSeats()
+	public void findAvailableSeats(String dc, String ac, int dayOfWeek, String date1)
 	{
-		//USER INPUT
-		String dc, ac, date1;
-		int dayOfWeek = 0;
-		
-		System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
-		dc = keyboard.nextLine();
-		System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
-		ac = keyboard.nextLine();
-		System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
-		date1 = keyboard.nextLine();
-		try{
-			java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
-			dayOfWeek = date.getDay();
-		}
-		catch(Exception e){
-			System.out.println(e);}
-		
-		//DB INTERACTIONS
 		try
 		{
 			ArrayList<Integer> flightNums = new ArrayList<Integer>();
@@ -1660,13 +1648,8 @@ public class PittToursMenu
 	Ask the user to supply the reservation number.
 	Query the database to get all the flights for the given reservation and print this to the user.
 	Print an error message in case of an non-existent reservation number.*/
-	public void showReservationByNumber()
+	public void showReservationByNumber(String reservationNumber)
 	{
-		String reservationNumber = "";
-
-		System.out.print("Please enter the reservation number to generate manifest for: ");
-		reservationNumber = keyboard.nextLine();
-
 		//Perform data input checking
 		if (reservationNumber.length() > 0)
 		{
@@ -1720,13 +1703,9 @@ public class PittToursMenu
 	/*Description:
 	Ask the user to supply the reservation number.
 	Mark the fact that the reservation was converted into a purchased ticket*/
-	public void buyTicket()
+	public void buyTicket(String selection)
 	{
-		String selection = "";
 		int updatedRows = 0;
-		System.out.print("Please enter the reservation number: ");
-		selection = keyboard.nextLine();
-
 		//Ensuring reservation number is within length constraints
 		if(selection.length() > 0 && selection.length() <= 5)
 		{
