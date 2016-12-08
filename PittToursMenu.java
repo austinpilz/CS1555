@@ -106,8 +106,10 @@ public class PittToursMenu
 						hp = keyboard.nextLine();
 						System.out.print("Please enter the low price: ");
 						lp = keyboard.nextLine();
+						//We need the airline name because we allowed multiple airlines to service one route, and assumed that different airlines can have different prices for a route
 						System.out.print("Please enter the airline name: ");
 						airline = keyboard.nextLine();
+						System.out.println("here");
 						changePricing(d,a,Integer.parseInt(hp),Integer.parseInt(lp),airline);
 					}
 					else
@@ -329,14 +331,60 @@ public class PittToursMenu
 		}
 	}
 	
-		//Function: loadPricing
+	//Function: changePricing
 	//inputs: departure city, arrival city, high price, low price, and the airline
 	//outputs: none
-	//Description: Changes price of the specified rout if it exists --> had to add airline
+	//Description: Changes price of the specified route if it exists --> had to add airline
 	//because we allowed multiple airlines to service a route, and they might have different prices
 	public void changePricing(String dept_city, String arr_city, int high_price, int low_price, String airline)
 	{
-		//TO DO
+		try
+		{
+			//find airline id
+			int airline_id = 0;
+			statement = connection.createStatement();
+			query = "select airline_id from airline where airline_name = \'"+airline+"\'";
+			resultSet = statement.executeQuery(query);
+			
+			if(resultSet.next()) {
+				airline_id = resultSet.getInt(1);
+			}
+			resultSet.close();
+		
+			query = "update price set high_price = ?, low_price = ? where departure_city = ? and arrival_city = ? and airline_id = ?";
+			prepStatement = connection.prepareStatement(query);
+			
+			prepStatement.setInt(1, high_price); 
+			prepStatement.setInt(2, low_price);
+			prepStatement.setString(3, dept_city);
+			prepStatement.setString(4, arr_city);
+			prepStatement.setInt(5, airline_id);
+			prepStatement.executeUpdate();
+			
+			resultSet = statement.executeQuery("select * from price");
+			System.out.println("\nAfter the update, data is...\n");
+			while(resultSet.next()) {
+			System.out.println(
+				resultSet.getString(1) + ", " +
+				resultSet.getString(2) + ", " +
+				resultSet.getString(3) + ", " +
+				resultSet.getInt(4) + ", " +
+				resultSet.getInt(5));
+			}
+			resultSet.close();
+		}
+		catch(Exception e)
+		{
+			System.out.print(e);
+		}
+		finally{
+			try {
+				if (statement != null) statement.close();
+				if (prepStatement != null) prepStatement.close();
+			} catch (SQLException e) {
+				System.out.println("Cannot close Statement. Machine error: "+e.toString());
+			}
+		}
 	}
 	
 	//Function: loadPlaneInfo
@@ -1765,8 +1813,8 @@ public class PittToursMenu
 		System.out.println("Welcome to PittFlights...");
 
 		String username,password;
-		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "password";
+		username = "ahf5"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "13+SCtoPITT+17";
 		
 		try
 		{
