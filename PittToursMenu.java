@@ -570,15 +570,7 @@ public class PittToursMenu
 					dc = keyboard.nextLine();
 					System.out.print("Please enter the three-letter airport code of the ARRIVAL city: ");
 					ac = keyboard.nextLine();
-					System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
-					date1 = keyboard.nextLine();
-					try{
-						java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
-						dayOfWeek = date.getDay();
-					}
-					catch(Exception e){
-						System.out.println(e);}
-					findAllRoutes(dc,ac,dayOfWeek);
+					findAllRoutes(dc,ac);
 					break;
 				case 5:
 					System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
@@ -587,15 +579,7 @@ public class PittToursMenu
 					ac = keyboard.nextLine();
 					System.out.print("Please enter the airline name: ");
 					airline = keyboard.nextLine();
-					System.out.print("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
-					date1 = keyboard.nextLine();
-					try{
-						java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
-						dayOfWeek = date.getDay();
-					}
-					catch(Exception e){
-						System.out.println(e);}
-					findAllRoutesByAirline(dc,ac,dayOfWeek,airline);
+					findAllRoutesByAirline(dc,ac,airline);
 					break;
 				case 6:		
 					System.out.print("Please enter the three-letter airport code of the DEPARTURE city: ");
@@ -609,7 +593,7 @@ public class PittToursMenu
 						dayOfWeek = date.getDay();
 					}
 					catch(Exception e){
-						System.out.println(e);}
+						System.out.println("Date not entered in the correct format.");}
 					findAvailableSeats(dc, ac, dayOfWeek, date1);
 					break;
 				case 7: 
@@ -626,11 +610,37 @@ public class PittToursMenu
 						dayOfWeek = date.getDay();
 					}
 					catch(Exception e){
-						System.out.println(e);}
+						System.out.println("Date not entered in the correct format.");}
 					findAvailableSeatsByAirline(dc, ac, dayOfWeek, date1,airline);
 					break;
 				case 8:
-					addReservation();
+					int numFlights = 0, flightNum = -1;
+					dayOfWeek = -1;
+					String cid = "";
+					ArrayList<Integer> flights = new ArrayList<Integer>();
+					ArrayList<java.util.Date> dates = new ArrayList<java.util.Date>();
+					ArrayList<Integer> dayOfWeeks = new ArrayList<Integer>();
+					
+					System.out.println("Please enter your customer id: ");
+					cid = keyboard.nextLine();
+					while(numFlights < 3 && flightNum != 0)
+					{
+						System.out.println("Please enter the flight number you wish to book: ");
+						flightNum = Integer.parseInt(keyboard.nextLine());
+						if(flightNum == 0){break;}
+						flights.add(flightNum);
+						System.out.println("Please enter the date you wish to fly in the format yyyy/MM/dd: ");
+						date1 = keyboard.nextLine();
+						try{
+							java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
+							dates.add(date);
+							dayOfWeek = date.getDay();
+							dayOfWeeks.add(dayOfWeek);
+						}
+						catch(Exception e){
+							System.out.println("Date not entered in the correct format.");}						
+					}
+					addReservation(cid, flights, dates, dayOfWeeks);
 					break;
 				case 9:
 					String reservationNumber = "";
@@ -885,7 +895,7 @@ public class PittToursMenu
 
 	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
 	routes, and one that finds and prints the routes with one connection.*/
-	public void findAllRoutes(String dc, String ac, int dayOfWeek)
+	public void findAllRoutes(String dc, String ac)
 	{
         try
         {
@@ -897,10 +907,7 @@ public class PittToursMenu
             resultSet = statement.executeQuery(query);
 
             while(resultSet.next()) {
-                if(resultSet.getString(2).charAt(dayOfWeek) != '-')
-                {
-                    flightNums.add(resultSet.getInt(1));
-                }
+                flightNums.add(resultSet.getInt(1));
             }
             resultSet.close();
 
@@ -914,40 +921,38 @@ public class PittToursMenu
             while(resultSet.next()) {
                 String dctemp = resultSet.getString(2), actemp = resultSet.getString(3);
                 int fn = resultSet.getInt(1);
-                if(resultSet.getString(4).charAt(dayOfWeek) != '-')
+
+                if(!dctemp.equals(dc))
                 {
-                    if(!dctemp.equals(dc))
+                    if(!connections.containsKey(dctemp))
                     {
-                        if(!connections.containsKey(dctemp))
-                        {
-                            ArrayList<String> temp = new ArrayList<String>();
-                            temp.add(fn+",2");
-                            connections.put(dctemp, temp);
-                        }
-                        else
-                        {
-                            ArrayList<String> temp = connections.get(dctemp);
-                            temp.add(fn+",2");
-                            connections.put(dctemp, temp);
-                        }
-                        connectFlightNumber.add(fn);
+                        ArrayList<String> temp = new ArrayList<String>();
+                        temp.add(fn+",2");
+                        connections.put(dctemp, temp);
                     }
-                    if(!actemp.equals(ac))
+                    else
                     {
-                        if(!connections.containsKey(actemp))
-                        {
-                            ArrayList<String> temp = new ArrayList<String>();
-                            temp.add(fn+",1");
-                            connections.put(actemp, temp);
-                        }
-                        else
-                        {
-                            ArrayList<String> temp = connections.get(actemp);
-                            temp.add(fn+",1");
-                            connections.put(actemp, temp);
-                        }
-                        connectFlightNumber.add(fn);
+                        ArrayList<String> temp = connections.get(dctemp);
+                        temp.add(fn+",2");
+                        connections.put(dctemp, temp);
                     }
+                    connectFlightNumber.add(fn);
+                }
+                if(!actemp.equals(ac))
+                {
+                    if(!connections.containsKey(actemp))
+                    {
+                        ArrayList<String> temp = new ArrayList<String>();
+                        temp.add(fn+",1");
+                        connections.put(actemp, temp);
+                    }
+                    else
+                    {
+                        ArrayList<String> temp = connections.get(actemp);
+                        temp.add(fn+",1");
+                        connections.put(actemp, temp);
+                    }
+                    connectFlightNumber.add(fn);
                 }
             }
             resultSet.close();
@@ -985,7 +990,7 @@ public class PittToursMenu
             //supply all the info for direct flights and connecting flights
             System.out.println("All flights between " + dc + " and " + ac);
 
-
+			System.out.println("DIRECT FLIGHTS: ");
 			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
 
 			for(Integer i : flightNums)
@@ -998,7 +1003,7 @@ public class PittToursMenu
                 }
                 resultSet.close();
             }
-
+			System.out.println("FLIGHTS WITH ONE CONNECTION: ");
             for(Integer i : connectFlightNumber)
             {
                 query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
@@ -1027,7 +1032,7 @@ public class PittToursMenu
 	}
 	
 	//Function: findAllRoutesByAirline
-	//inputs: none
+	//inputs: departure_city, arrival_city, airline
 	//outputs: none
 	/*Description:
 	Find all routes between two cities of a given airline
@@ -1043,7 +1048,7 @@ public class PittToursMenu
 	before the departure time of the second flight.
 	Hint: For simplicity you may split this into two queries: one that finds and prints the direct
 	routes, and one that finds and prints the routes with one connection.*/
-	public void findAllRoutesByAirline(String dc, String ac, int dayOfWeek, String airline_name)
+	public void findAllRoutesByAirline(String dc, String ac, String airline_name)
 	{
 		try
 		{
@@ -1065,10 +1070,7 @@ public class PittToursMenu
 			resultSet = statement.executeQuery(query);
 
 			while(resultSet.next()) {
-				if(resultSet.getString(2).charAt(dayOfWeek) != '-')
-				{
-					flightNums.add(resultSet.getInt(1));
-				}
+				flightNums.add(resultSet.getInt(1));
 			}
 			resultSet.close();
 
@@ -1082,40 +1084,38 @@ public class PittToursMenu
 			while(resultSet.next()) {
 				String dctemp = resultSet.getString(2), actemp = resultSet.getString(3);
 				int fn = resultSet.getInt(1);
-				if(resultSet.getString(4).charAt(dayOfWeek) != '-')
+				
+				if(!dctemp.equals(dc))
 				{
-					if(!dctemp.equals(dc))
+					if(!connections.containsKey(dctemp)) //if the table already has the city
 					{
-						if(!connections.containsKey(dctemp))
-						{
-							ArrayList<String> temp = new ArrayList<String>();
-							temp.add(fn+",2");
-							connections.put(dctemp, temp);
-						}
-						else
-						{
-							ArrayList<String> temp = connections.get(dctemp);
-							temp.add(fn+",2");
-							connections.put(dctemp, temp);
-						}
-						connectFlightNumber.add(fn);
+						ArrayList<String> temp = new ArrayList<String>();
+						temp.add(fn+",2");
+						connections.put(dctemp, temp);
 					}
-					if(!actemp.equals(ac))
+					else
 					{
-						if(!connections.containsKey(actemp))
-						{
-							ArrayList<String> temp = new ArrayList<String>();
-							temp.add(fn+",1");
-							connections.put(actemp, temp);
-						}
-						else
-						{
-							ArrayList<String> temp = connections.get(actemp);
-							temp.add(fn+",1");
-							connections.put(actemp, temp);
-						}
-						connectFlightNumber.add(fn);
+						ArrayList<String> temp = connections.get(dctemp);
+						temp.add(fn+",2");
+						connections.put(dctemp, temp);
 					}
+					connectFlightNumber.add(fn);
+				}
+				if(!actemp.equals(ac))
+				{
+					if(!connections.containsKey(actemp))
+					{
+						ArrayList<String> temp = new ArrayList<String>();
+						temp.add(fn+",1");
+						connections.put(actemp, temp);
+					}
+					else
+					{
+						ArrayList<String> temp = connections.get(actemp);
+						temp.add(fn+",1");
+						connections.put(actemp, temp);
+					}
+					connectFlightNumber.add(fn);
 				}
 			}
 			resultSet.close();
@@ -1136,12 +1136,14 @@ public class PittToursMenu
 							leg1 = true;
 						else if(leg.split(",")[1].equals("2"))
 							leg2 = true;
-
+						
+						//there is a flight into and out of the connection city where the first city is 
+						//departure city and last city is arrival city
 						if(leg1 && leg2)
 							break;
 					}
 				}
-				if(!leg1 || !leg2)
+				if(!leg1 || !leg2) //if there isn't a flight into or a flight out of the connection city
 				{
 					for(Integer i: foo)
 					{
@@ -1153,7 +1155,7 @@ public class PittToursMenu
 			//supply all the info for direct flights and connecting flights
 			System.out.println("All flights between " + dc + " and " + ac);
 
-
+			System.out.println("DIRECT FLIGHTS");
 			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
 
 			for(Integer i : flightNums)
@@ -1166,7 +1168,9 @@ public class PittToursMenu
 				}
 				resultSet.close();
 			}
-
+			
+			System.out.println("\nFLIGHTS WITH ONE CONNECTION");
+			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
 			for(Integer i : connectFlightNumber)
 			{
 				query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
@@ -1196,7 +1200,7 @@ public class PittToursMenu
 	
 
 	//Function: findAvailableSeatsByAirline
-	//inputs: none
+	//inputs: departure_city, arrival_city, day of the week, date of flight, airline
 	//outputs: none
 	/*Description:
 	For a given airline, find all routes with available seats between two cities on given date
@@ -1640,53 +1644,69 @@ public class PittToursMenu
 	available seats in the said flights. If there are seats available on all flights, generate a unique
 	reservation number and print this back to the user, along with a confirmation message. Otherwise,
 	print an error message*/
-	public void addReservation()
+	public void addReservation(String cid, ArrayList<Integer> flights, ArrayList<java.util.Date> dates, ArrayList<Integer> dayOfWeeks)
 	{
-		System.out.println("COMING SOON");
-		/*int[] flight = new int[4];
-		java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy/MM/dd");
-		java.sql.Date[] date_reg = new java.sql.Date[4];
-		
-		try{
-		System.out.print("Please enter the flight number of first leg: ");
-		flight[0] = Integer.parseInt(keyboard.nextLine());
-		
-		if(flight[0] != 0)
+		boolean cannotReserve = false; //if we can't book one or more of the flights, we cannot make the reservation
+		String creditNum = "";
+		//Perform data input checking
+		if (flights.size() > 0)
 		{
-		System.out.print("Please enter the date of the flight in format (yyyy-mm-dd): ");
-		date_reg[0] = df.parse(keyboard.nextLine());
-		System.out.println("DATE: "+date_reg[0]);
-		System.out.print("Please enter the flight number of second leg: ");
-		flight[1] = Integer.parseInt(keyboard.nextLine());
-		if(flight[1] != 0)
-		{
-			System.out.print("Please enter the date of the flight in format (yyyy-mm-dd): ");
-			date_reg[1] = df.parse(keyboard.nextLine());
-			System.out.print("Please enter the flight number of third leg: ");
-			flight[2] = Integer.parseInt(keyboard.nextLine());
-			
-			if(flight[2] != 0)
+			System.out.println("\nAttempting to make a new reservation...");
+			try
 			{
-				System.out.print("Please enter the date of the flight in format (yyyy-mm-dd): ");
-				date_reg[2] = df.parse(keyboard.nextLine());
-				System.out.print("Please enter the flight number of fourth leg: ");
-				flight[3] = Integer.parseInt(keyboard.nextLine());
-				
-				if(flight[3] != 0)
+				for(int i = 0; i < flights.size() && !cannotReserve; i++)
 				{
-					System.out.print("Please enter the date of the flight in format (yyyy-mm-dd): ");
-					date_reg[3] = df.parse(keyboard.nextLine());
+					query = "SELECT * FROM flight WHERE Flight_Number = ?";
+					prepStatement = connection.prepareStatement(query);
+					prepStatement.setString(1, flights.get(i)+"");
+					resultSet = prepStatement.executeQuery();
+
+					if (resultSet.getFetchSize() != 0)
+					{
+						String ws = resultSet.getString("WEEKLY_SCHEDULE");
+						if(ws.charAt(dayOfWeeks.get(i)) == '-')
+							throw new Exception("ERROR: The flight you want does not fly on that day of the week!\n\n");
+					}
+					else
+					{
+						throw new Exception("ERROR: There were no flights found for that flight number!\n\n\n");
+					}
+					resultSet.close();
+					
+					query = "SELECT * FROM customer WHERE cid = ?";
+					prepStatement = connection.prepareStatement(query);
+					prepStatement.setString(1, cid);
+					resultSet = prepStatement.executeQuery();
+
+					if (resultSet.getFetchSize() != 0)
+					{
+						creditNum = resultSet.getString("CREDIT_CARD_NUM");
+					}
+					else
+					{
+						throw new Exception("ERROR: You must register as a customer before you can book a flight!\n\n\n");
+					}
+					resultSet.close();
+					
+					//select count from reservation_detail where flight_number = ? and flight_date = ?
+					//select plane_size from plane where 
+				}
+
+			} catch (Exception e) {
+				System.out.print(e);
+			} finally {
+				try {
+					if (statement != null) statement.close();
+					if (prepStatement != null) prepStatement.close();
+				} catch (SQLException e) {
+					System.out.println("Cannot close Statement. Machine error: " + e.toString());
 				}
 			}
 		}
-		}
-		}
-		catch(Exception e)
+		else
 		{
-			System.out.println(e);
-		}*/
-		
-		//TO DO: DB PART
+			System.out.println("ERROR: No flights were selected. Returning to menu...\n\n\n");
+		}
 	}
 	
 	//Function: showReservationByNumber
