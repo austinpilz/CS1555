@@ -46,43 +46,61 @@ public class PittToursMenu
 		System.out.println("\n\n---------- PittTours Test Driver ----------\n");
 		System.out.println("Each function will be called 10 times.");
 
-		// Erase Database
-		System.out.println("1.) Erase Database");
-		this.eraseDatabase();
-		this.eraseDatabase();
-		this.eraseDatabase();
-		this.eraseDatabase();
-		this.eraseDatabase();
-		this.eraseDatabase();
-		this.eraseDatabase();
-		this.eraseDatabase();
-		this.eraseDatabase();
-		this.eraseDatabase();
+		String airlineFile = "";
+		System.out.print("Please enter the location of the AIRLINE .csv file: ");
+		airlineFile = keyboard.nextLine();
 
-		// Load Airline
+		String planeFile = "";
+		System.out.print("Please enter the location of the PLANE .csv file: ");
+		planeFile = keyboard.nextLine();
 
-		// Load Schedule
+		String scheduleFile = "";
+		System.out.print("Please enter the location of the SCHEDULE .csv file: ");
+		scheduleFile = keyboard.nextLine();
 
-		// Load Pricing
+		String pricingFile = "";
+		System.out.print("Please enter the location of the PRICING .csv file: ");
+		pricingFile = keyboard.nextLine();
 
-		// Load Plane
+
+		// Erase & Loading
+		System.out.println("1 - 5.) Erase Database & Loading");
+		for (int i = 0; i < 10; i++)
+		{
+			this.eraseDatabase();
+			this.loadAirline(airlineFile);
+			this.loadPlaneInfo(planeFile);
+			this.loadSchedule(scheduleFile);
+			this.loadPricing(pricingFile);
+		}
 
 		// Manifest
 		this.generateManifest("fightNumber", "flightDate");
 
 		// Add Customer
-		this.addCustomer("Mr", "Austin", "Pilz", "austinpilz@gmail.com", "4127154340", "12345", "ccexpire", "111 Charles Dr", "Carnegie", "PA", "1");
+		System.out.println("7.) Add Customer");
+		this.addCustomer("Mr", "Austin", "Pilz", "austinpilz@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Mrs", "Ethan", "Pilz", "ethanppilz@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Ms", "Alisha", "Forrest", "ah5@gmail.com", "4124291294", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Mr", "Test1", "Test1", "test1@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Mr", "Test2", "Test2", "test2@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Mr", "Test3", "Test3", "test3@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Mr", "Test4", "Test4", "test4@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Mr", "Test5", "Test5", "test5@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Mr", "Test6", "Test6", "test6@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+		this.addCustomer("Mr", "Test7", "Test7", "test7@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
 
 		// Get Customer Info
+		System.out.println("8.) Show Customer Info");
+		this.showCustomerInfo("Austin", "");
+		this.showCustomerInfo("Austin", "P");
+		this.showCustomerInfo("Austin", "Pi");
+		this.showCustomerInfo("Austin", "Pil");
 		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pil");
+		this.showCustomerInfo("Austin", "Pi");
+		this.showCustomerInfo("Austin", "P");
+		this.showCustomerInfo("Austin", "Pi");
 		this.showCustomerInfo("Austin", "Pilz");
 
 		// Find flight price
@@ -98,8 +116,18 @@ public class PittToursMenu
 		// Add reservation
 
 		// Show reservation info
+		System.out.println("15.) Show Reservation Info");
+		for (int i = 0; i < 10; i++)
+		{
+			this.showReservationByNumber(i+"");
+		}
 
 		// Buy ticket from reservation
+		System.out.println("16.) Show Reservation Info");
+		for (int i = 0; i < 10; i++)
+		{
+			this.buyTicket(i+"");
+		}
 	}
 			
 	//Function: AdminPrivileges
