@@ -231,6 +231,18 @@ BEGIN
 END;
 /
 
+--The change of price trigger depends on the fact that the current price is accurate
+--therefore, when inserting a new price, if there are reservations it updates their price
+CREATE OR REPLACE TRIGGER calcPriceT
+AFTER INSERT ON Price
+BEGIN
+	for i in (select Reservation_Number, Start_City, End_City from Reservation) 
+	loop
+		calcFlightPricing(i.Reservation_Number, i.Start_City, i.End_City);
+	end loop;
+END;
+/
+
 CREATE OR REPLACE PROCEDURE calcFlightPricing(RNum in varchar, startCity in varchar, endCity in varchar)
 AS
 	flightStartCity varchar(3);
@@ -353,6 +365,7 @@ BEGIN
 	if (numReserved > planeCap) then --if there are more reservations than space on the flight
 		planeType := findPlane(numReserved,planeOwner); --see if a bigger plane can be found
 		if planeType IS NULL then
+			--rollback;
 			update reservation set Ticketed = 'N' where reservation_number = :new.reservation_number; --if there is not a bigger plane then the person does not get a ticket
 		else
 			updatePlane(:new.flight_number, planeType); --update the plane to the larger size
@@ -418,4 +431,6 @@ BEGIN
 	end loop;
 END;
 /
+
+commit;
 

@@ -27,7 +27,7 @@ public class PittToursMenu
 	public PittToursMenu()
 	{
 		int clientOrAdmin;
-		System.out.print("Welcome to Pitt Tours!\nWould you like to see the menu for:\n\t1) Admin\n\t2) Client\n 3) Test Driver\nEnter the menu item number to continue: ");
+		System.out.print("\nWould you like to see the menu for:\n\t1) Admin\n\t2) Client\n\t3) Test Driver\nEnter the menu item number to continue: ");
 		clientOrAdmin = Integer.parseInt(keyboard.nextLine());
 		
 		if(clientOrAdmin == 1)
@@ -712,7 +712,7 @@ public class PittToursMenu
 					dayOfWeek = -1;
 					String cid = "";
 					ArrayList<Integer> flights = new ArrayList<Integer>();
-					ArrayList<java.util.Date> dates = new ArrayList<java.util.Date>();
+					ArrayList<String> dates = new ArrayList<String>();
 					ArrayList<Integer> dayOfWeeks = new ArrayList<Integer>();
 					
 					System.out.println("Please enter your customer id: ");
@@ -727,12 +727,13 @@ public class PittToursMenu
 						date1 = keyboard.nextLine();
 						try{
 							java.util.Date date = new java.text.SimpleDateFormat("yyyy/MM/dd").parse(date1);
-							dates.add(date);
+							dates.add(date1);
 							dayOfWeek = date.getDay();
 							dayOfWeeks.add(dayOfWeek);
 						}
 						catch(Exception e){
-							System.out.println("Date not entered in the correct format.");}						
+							System.out.println("Date not entered in the correct format.");}		
+						numFlights++;
 					}
 					addReservation(cid, flights, dates, dayOfWeeks);
 					break;
@@ -1798,35 +1799,52 @@ public class PittToursMenu
 	available seats in the said flights. If there are seats available on all flights, generate a unique
 	reservation number and print this back to the user, along with a confirmation message. Otherwise,
 	print an error message*/
-	public void addReservation(String cid, ArrayList<Integer> flights, ArrayList<java.util.Date> dates, ArrayList<Integer> dayOfWeeks)
+	public void addReservation(String cid, ArrayList<Integer> flights, ArrayList<String> dates, ArrayList<Integer> dayOfWeeks)
 	{
 		boolean cannotReserve = false; //if we can't book one or more of the flights, we cannot make the reservation
-		String creditNum = "";
+		String creditNum = "",airline_id = "", plane = "", sc = "", ec = "";
+		java.sql.Date currentDate = java.sql.Date.valueOf(dates.get(0).replace("/","-"));
+		int numReservations = 0, rnum = 0;
 		//Perform data input checking
 		if (flights.size() > 0)
 		{
 			System.out.println("\nAttempting to make a new reservation...");
 			try
 			{
+				//isolating the reservation
+				connection.setAutoCommit(false);
+				connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				statement = connection.createStatement();
+				
 				for(int i = 0; i < flights.size() && !cannotReserve; i++)
 				{
-					query = "SELECT * FROM flight WHERE Flight_Number = ?";
+					//check to see that the flight number actually exists
+					query = "SELECT airline_id, weekly_schedule FROM flight WHERE Flight_Number = ?";
 					prepStatement = connection.prepareStatement(query);
 					prepStatement.setString(1, flights.get(i)+"");
 					resultSet = prepStatement.executeQuery();
-
+					
 					if (resultSet.getFetchSize() != 0)
 					{
-						String ws = resultSet.getString("WEEKLY_SCHEDULE");
-						if(ws.charAt(dayOfWeeks.get(i)) == '-')
-							throw new Exception("ERROR: The flight you want does not fly on that day of the week!\n\n");
+						if(resultSet.next())
+						{
+							airline_id = resultSet.getString(1);
+							String ws = resultSet.getString(2);
+							if(ws.charAt(dayOfWeeks.get(i)) == '-')
+							{
+								connection.rollback();
+								throw new Exception("ERROR: The flight you want does not fly on that day of the week!\n\n");
+							}
+						}
 					}
 					else
 					{
+						connection.rollback();
 						throw new Exception("ERROR: There were no flights found for that flight number!\n\n\n");
 					}
 					resultSet.close();
 					
+					//check to see if they are a registered customer
 					query = "SELECT * FROM customer WHERE cid = ?";
 					prepStatement = connection.prepareStatement(query);
 					prepStatement.setString(1, cid);
@@ -1834,17 +1852,110 @@ public class PittToursMenu
 
 					if (resultSet.getFetchSize() != 0)
 					{
-						creditNum = resultSet.getString("CREDIT_CARD_NUM");
+						if(resultSet.next()) {
+							creditNum = resultSet.getString("CREDIT_CARD_NUM");
+						}	
 					}
 					else
 					{
+						connection.rollback();
 						throw new Exception("ERROR: You must register as a customer before you can book a flight!\n\n\n");
 					}
 					resultSet.close();
 					
 					//select count from reservation_detail where flight_number = ? and flight_date = ?
-					//select plane_size from plane where 
+					query = "select count(*) from flight natural join reservation_detail where flight_number = \'"+flights.get(i)+"\' and flight_date = TO_DATE(\'"+dates.get(i)+"\',\'yyyy/MM/dd\')";
+					resultSet = statement.executeQuery(query);
+			
+					if(resultSet.next()) {
+						numReservations = resultSet.getInt(1);
+					}
+					resultSet.close();
+					
+					//find plane capacity
+					int planeCap = 0;
+					query = "select plane_capacity from flight natural join plane where flight_number = \'"+flights.get(i)+"\'";
+					resultSet = statement.executeQuery(query);
+			
+					if(resultSet.next()) {
+						planeCap = resultSet.getInt(1);
+					}
+					resultSet.close();
+					
+					if(numReservations >= planeCap)
+					{
+						//Used Oracle's docs online to find out how to call a sql function from java
+						//https://docs.oracle.com/cd/E17952_01/connector-j-en/connector-j-usagenotes-statements-callable.html
+						callStatement = connection.prepareCall("{? = call findPlane(?,?)}");
+						
+						callStatement.registerOutParameter(1, Types.VARCHAR);
+						callStatement.setInt(2, numReservations);
+						callStatement.setString(3, airline_id);
+						callStatement.execute();
+						plane = callStatement.getString(1);
+						callStatement.close();	
+						
+						if(plane == null)
+						{
+							connection.rollback();
+							throw new Exception("Cannot complete reservation. There aren't enough seats on flight "+flights.get(i));
+						}
+					}
 				}
+				
+				//generate a unique reservation_number
+				query = "select max(reservation_number) from reservation";
+				resultSet = statement.executeQuery(query);
+			
+				if(resultSet.next()) {
+					rnum = resultSet.getInt(1) + 1;
+				}
+				resultSet.close();
+					
+				//find start_city
+				query = "select departure_city from flight where flight_number = \'"+flights.get(0)+"\'";
+				resultSet = statement.executeQuery(query);
+				if(resultSet.next()) {
+					sc = resultSet.getString(1);
+				}
+				resultSet.close();
+					
+				//find end_city
+				query = "select arrival_city from flight where flight_number = \'"+flights.get(flights.size()-1)+"\'";
+				resultSet = statement.executeQuery(query);
+				if(resultSet.next()) {
+					ec = resultSet.getString(1);
+				}
+				resultSet.close();
+				
+				//find current date
+				query = "select C_Date from PDate";
+				resultSet = statement.executeQuery(query);
+				if(resultSet.next()) {
+					currentDate = resultSet.getDate(1);
+				}
+				resultSet.close();
+					
+				query = "insert into reservation(Reservation_Number, CID, Start_City, End_City, Cost, Credit_Card_Num, Reservation_Date, Ticketed) values (?,?,?,?,?,?,?,?)";
+				prepStatement = connection.prepareStatement(query);
+				prepStatement.setString(1, rnum+"");
+				prepStatement.setString(2, cid);
+				prepStatement.setString(3, sc);
+				prepStatement.setString(4, ec);
+				prepStatement.setString(5, ""+0);//there is a trigger that calculates cost
+				prepStatement.setString(6, creditNum);
+				prepStatement.setDate(7, currentDate);
+				prepStatement.setString(8, "N"); // not ticketed
+				prepStatement.executeUpdate();
+					
+				for(int i = 0; i < flights.size(); i++)
+				{
+					query = "insert into reservation_detail(Reservation_Number, Flight_Number, Flight_Date, Leg) values ("+rnum+","+flights.get(i)+",TO_DATE(\'"+dates.get(i)+"\',\'yyyy/MM/dd\'),"+i+")";
+					statement.executeUpdate(query);
+					
+				}
+				connection.commit();
+				System.out.println("Booking flight was successful. Your reservation Number is: "+rnum);
 
 			} catch (Exception e) {
 				System.out.print(e);
@@ -1852,6 +1963,8 @@ public class PittToursMenu
 				try {
 					if (statement != null) statement.close();
 					if (prepStatement != null) prepStatement.close();
+					if (callStatement != null) callStatement.close();
+					
 				} catch (SQLException e) {
 					System.out.println("Cannot close Statement. Machine error: " + e.toString());
 				}
