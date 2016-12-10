@@ -67,12 +67,14 @@ public class PittToursMenu
 		System.out.println("1 - 5.) Erase Database & Loading");
 		for (int i = 0; i < 10; i++)
 		{
-			this.eraseDatabase();
-			this.loadAirline(airlineFile);
-			this.loadPlaneInfo(planeFile);
-			this.loadSchedule(scheduleFile);
-			this.loadPricing(pricingFile);
+			eraseDatabase();
+			loadAirline(airlineFile);
+			loadPlaneInfo(planeFile);
+			loadSchedule(scheduleFile);
+			loadPricing(pricingFile);
 		}
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
 
 		// Manifest
 		this.generateManifest("fightNumber", "flightDate");
@@ -89,7 +91,9 @@ public class PittToursMenu
 		this.addCustomer("Mr", "Test5", "Test5", "test5@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
 		this.addCustomer("Mr", "Test6", "Test6", "test6@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
 		this.addCustomer("Mr", "Test7", "Test7", "test7@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
+		
 		// Get Customer Info
 		System.out.println("8.) Show Customer Info");
 		this.showCustomerInfo("Austin", "");
@@ -490,8 +494,7 @@ public class PittToursMenu
 	{
 		try
 		{
-			query = "insert into plane values (?,?,?,?,?,?)";
-			prepStatement = connection.prepareStatement(query);
+			statement = connection.createStatement();
 			BufferedReader br = new BufferedReader(new FileReader(selection));
 			
 			while(br.ready())
@@ -499,16 +502,8 @@ public class PittToursMenu
 				String[] line = br.readLine().split(",");
 				if(line.length == 6)
 				{
-					java.sql.Date date_reg = java.sql.Date.valueOf(line[3]);
-					
-					prepStatement.setString(1, line[0]); 
-					prepStatement.setString(2, line[1]);
-					prepStatement.setInt(3, Integer.parseInt(line[2]));
-					prepStatement.setDate(4, date_reg);
-					prepStatement.setInt(5, Integer.parseInt(line[4]));
-					prepStatement.setString(6, line[5]);
-
-					prepStatement.executeUpdate();
+					query = "insert into plane values ("+line[0]+","+line[1]+","+line[2]+",TO_DATE(\'"+line[3]+"\',\'yyyy/MM/dd/\'),"+line[4]+","+line[5]+")";
+					statement.executeUpdate(query);
 				}
 			}
 			
@@ -886,11 +881,11 @@ public class PittToursMenu
 			if (resultSet.getFetchSize() != 0)
 			{
 
-				System.out.format("%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s\n", new String[]{"PittRewards #", "Salutation",  "First Name", "Last Name", "Street", "City", "State", "Phone", "Email", "FreqMiles#", "CC#", "CCExpire"});
+				System.out.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", new String[]{"PittRewards #", "Salutation",  "First Name", "Last Name", "Street", "City", "State", "Phone", "Email", "FreqMiles#", "CC#", "CCExpire"});
 
 				while (resultSet.next())
 				{
-					System.out.format("%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getString("CID"), resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name"), resultSet.getString("Street"), resultSet.getString("City"), resultSet.getString("State"), resultSet.getString("Phone"), resultSet.getString("Email"), resultSet.getString("Frequent_Miles"), resultSet.getString("Credit_Card_Num"), resultSet.getString("Credit_Card_Expire")});
+					System.out.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", new String[]{resultSet.getString("CID"), resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name"), resultSet.getString("Street"), resultSet.getString("City"), resultSet.getString("State"), resultSet.getString("Phone"), resultSet.getString("Email"), resultSet.getString("Frequent_Miles"), resultSet.getString("Credit_Card_Num"), resultSet.getString("Credit_Card_Expire")});
 				}
 
 				System.out.println("\n\n\n");
