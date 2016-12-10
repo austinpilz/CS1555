@@ -75,7 +75,10 @@ public class PittToursMenu
 		}
 
 		// Manifest
-		this.generateManifest("fightNumber", "flightDate");
+		System.out.println("6.) Show Reservation Info");
+		for (int i = 0; i < 10; i++) {
+			this.generateManifest(i, "16-NOV-2016");
+		}
 
 		// Add Customer
 		System.out.println("7.) Add Customer");
@@ -104,16 +107,52 @@ public class PittToursMenu
 		this.showCustomerInfo("Austin", "Pilz");
 
 		// Find flight price
+		System.out.println("9.) Find Flight Prices");
+		this.findPriceByRoute("JFK", "CLE");
+		this.findPriceByRoute("PHI", "CLE");
+		this.findPriceByRoute("ATL", "PHI");
+		this.findPriceByRoute("CLE", "DFW");
+		this.findPriceByRoute("PIT", "DFW");
+		this.findPriceByRoute("LAX", "ATL");
+		this.findPriceByRoute("BWI", "ATL");
+		this.findPriceByRoute("PIT", "ORD");
+		this.findPriceByRoute("LAX", "PITT");
+		this.findPriceByRoute("DFW", "PITT");
 
 		// Find all routes between two cities
+		System.out.println("10.) Find Routes Between Cities");
+		this.findAllRoutes("JFK", "CLE");
+		this.findAllRoutes("PHI", "CLE");
+		this.findAllRoutes("ATL", "PHI");
+		this.findAllRoutes("CLE", "DFW");
+		this.findAllRoutes("PIT", "DFW");
+		this.findAllRoutes("LAX", "ATL");
+		this.findAllRoutes("BWI", "ATL");
+		this.findAllRoutes("PIT", "ORD");
+		this.findAllRoutes("LAX", "PITT");
+		this.findAllRoutes("DFW", "PITT");
 
 		// Find all routes between two cities (airline)
+		System.out.println("11.) Find Routes Between Cities (Airline)");
+		this.findAllRoutesByAirline("JFK", "CLE", "1");
+		this.findAllRoutesByAirline("PHI", "CLE", "1");
+		this.findAllRoutesByAirline("ATL", "PHI", "1");
+		this.findAllRoutesByAirline("CLE", "DFW", "1");
+		this.findAllRoutesByAirline("PIT", "DFW", "2");
+		this.findAllRoutesByAirline("LAX", "ATL", "1");
+		this.findAllRoutesByAirline("BWI", "ATL", "4");
+		this.findAllRoutesByAirline("PIT", "ORD", "1");
+		this.findAllRoutesByAirline("LAX", "PITT", "5");
+		this.findAllRoutesByAirline("DFW", "PITT", "1");
 
 		// Find all routes between two cities (with open seats)
+		//this.findAvailableSeats();
 
 		// Find all routes between two cities (airline)
+		//this.findAvailableSeatsByAirline();
 
 		// Add reservation
+		//this.addReservation();
 
 		// Show reservation info
 		System.out.println("15.) Show Reservation Info");
