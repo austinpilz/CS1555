@@ -27,13 +27,79 @@ public class PittToursMenu
 	public PittToursMenu()
 	{
 		int clientOrAdmin;
-		System.out.print("Welcome to Pitt Tours!\nWould you like to see the menu for:\n\t1) Admin\n\t2) Client\nEnter the menu item number to continue: ");
+		System.out.print("Welcome to Pitt Tours!\nWould you like to see the menu for:\n\t1) Admin\n\t2) Client\n 3) Test Driver\nEnter the menu item number to continue: ");
 		clientOrAdmin = Integer.parseInt(keyboard.nextLine());
 		
 		if(clientOrAdmin == 1)
 			AdminPrivileges();
-		else
+		else if (clientOrAdmin == 2)
 			ClientPrivileges();
+		else
+			testDriver();
+	}
+
+	/**
+	 * Performs required stress testing.
+	 */
+	public void testDriver()
+	{
+		System.out.println("\n\n---------- PittTours Test Driver ----------\n");
+		System.out.println("Each function will be called 10 times.");
+
+		// Erase Database
+		System.out.println("1.) Erase Database");
+		this.eraseDatabase();
+		this.eraseDatabase();
+		this.eraseDatabase();
+		this.eraseDatabase();
+		this.eraseDatabase();
+		this.eraseDatabase();
+		this.eraseDatabase();
+		this.eraseDatabase();
+		this.eraseDatabase();
+		this.eraseDatabase();
+
+		// Load Airline
+
+		// Load Schedule
+
+		// Load Pricing
+
+		// Load Plane
+
+		// Manifest
+		this.generateManifest("fightNumber", "flightDate");
+
+		// Add Customer
+		this.addCustomer("Mr", "Austin", "Pilz", "austinpilz@gmail.com", "4127154340", "12345", "ccexpire", "111 Charles Dr", "Carnegie", "PA", "1");
+
+		// Get Customer Info
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+		this.showCustomerInfo("Austin", "Pilz");
+
+		// Find flight price
+
+		// Find all routes between two cities
+
+		// Find all routes between two cities (airline)
+
+		// Find all routes between two cities (with open seats)
+
+		// Find all routes between two cities (airline)
+
+		// Add reservation
+
+		// Show reservation info
+
+		// Buy ticket from reservation
 	}
 			
 	//Function: AdminPrivileges
