@@ -1082,32 +1082,46 @@ public class PittToursMenu
             }
 
             //supply all the info for direct flights and connecting flights
-            System.out.println("All flights between " + dc + " and " + ac);
-
-			System.out.println("DIRECT FLIGHTS: ");
+            System.out.println("\nAll flights between " + dc + " and " + ac);
 			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
 
-			for(Integer i : flightNums)
-            {
-                query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
-                resultSet = statement.executeQuery(query);
-
-                if(resultSet.next()) {
-					System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
-                }
-                resultSet.close();
-            }
-			System.out.println("FLIGHTS WITH ONE CONNECTION: ");
-            for(Integer i : connectFlightNumber)
-            {
-                query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
-                resultSet = statement.executeQuery(query);
-
-                if(resultSet.next()) {
-					System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+			if(flightNums.size() > 0)
+			{
+				System.out.println("\nDIRECT FLIGHTS: ");
+				for(Integer i : flightNums)
+				{
+					query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
+					resultSet = statement.executeQuery(query);
+	
+					if(resultSet.next()) {
+						System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+					}
+					resultSet.close();
 				}
-                resultSet.close();
-            }
+			}
+			else
+			{
+				System.out.println("THERE ARE NO DIRECT FLIGHTS.");
+			}
+			
+			if(connectFlightNumber.size() > 0)
+			{
+				System.out.println("\nFLIGHTS WITH ONE CONNECTION: ");
+				for(Integer i : connectFlightNumber)
+				{
+					query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
+					resultSet = statement.executeQuery(query);
+
+					if(resultSet.next()) {
+						System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+					}
+					resultSet.close();
+				}
+			}
+			else
+			{
+				System.out.println("THERE ARE NO FLIGHTS WITH ONE CONNECTION.");
+			}
 
 
         }
@@ -1247,35 +1261,48 @@ public class PittToursMenu
 			}
 
 			//supply all the info for direct flights and connecting flights
-			System.out.println("All flights between " + dc + " and " + ac);
-
-			System.out.println("DIRECT FLIGHTS");
+			System.out.println("\nAll flights between " + dc + " and " + ac);
 			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
-
-			for(Integer i : flightNums)
+			
+			if(flightNums.size() > 0)
 			{
-				query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
-				resultSet = statement.executeQuery(query);
+				System.out.println("\nDIRECT FLIGHTS: ");
 
-				if(resultSet.next()) {
-					System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+				for(Integer i : flightNums)
+				{
+					query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
+					resultSet = statement.executeQuery(query);
+	
+					if(resultSet.next()) {
+						System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+					}
+					resultSet.close();
 				}
-				resultSet.close();
+			}
+			else
+			{
+				System.out.println("THERE ARE NO DIRECT FLIGHTS.");
 			}
 			
-			System.out.println("\nFLIGHTS WITH ONE CONNECTION");
-			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
-			for(Integer i : connectFlightNumber)
+			if(connectFlightNumber.size() > 0)
 			{
-				query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
-				resultSet = statement.executeQuery(query);
+				System.out.println("\nFLIGHTS WITH ONE CONNECTION: ");
+				System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
+				for(Integer i : connectFlightNumber)
+				{
+					query = "select flight_number, airline_id, departure_city, departure_time, arrival_city, arrival_time from flight where flight_number = \'"+i+"\'";
+					resultSet = statement.executeQuery(query);
 
-				if(resultSet.next()) {
-					System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+					if(resultSet.next()) {
+						System.out.format("%15s%15s%15s%15s%15s%15s\n", new String[]{resultSet.getInt(1)+"", resultSet.getInt(2)+"",  resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6)});
+					}
+					resultSet.close();
 				}
-				resultSet.close();
 			}
-
+			else
+			{
+				System.out.println("THERE ARE NO FLIGHTS WITH ONE CONNECTION.");
+			}
 
 		}
 		catch(Exception e)
@@ -1464,37 +1491,54 @@ public class PittToursMenu
 			}
 			
 			//supply all the info for direct flights and connecting flights
-			System.out.println("All flights with available seats:\nflight number, airline id, departure_city, arrival_city, departure_time, arrival_time");
-			for(Integer i : flightNums)
-			{
-				query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
-				resultSet = statement.executeQuery(query);
+			System.out.println("\nAll flights with available seats:\nflight number, airline id, departure_city, arrival_city, departure_time, arrival_time");
 			
-				if(resultSet.next()) {
-					System.out.println(resultSet.getInt(1)+" , "+ 
+			if(flightNums.size() > 0)
+			{
+				System.out.println("\nDIRECT FLIGHTS:");
+				for(Integer i : flightNums)
+				{
+					query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
+					resultSet = statement.executeQuery(query);
+			
+					if(resultSet.next()) {
+						System.out.println(resultSet.getInt(1)+" , "+ 
 										resultSet.getInt(2)+" , "+
 										resultSet.getString(3)+" , "+
 										resultSet.getString(4)+" , "+
 										resultSet.getString(5)+" , "+
 										resultSet.getString(6));
+					}
+					resultSet.close();
 				}
-				resultSet.close();
+			}
+			else
+			{
+				System.out.println("THERE ARE NO DIRECT FLIGHTS.");
 			}
 			
-			for(Integer i : connectFlightNumber)
+			if(connectFlightNumber.size() > 0)
 			{
-				query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
-				resultSet = statement.executeQuery(query);
+				System.out.println("\nFLIGHTS WITH ONE CONNECTION:");
+				for(Integer i : connectFlightNumber)
+				{
+					query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
+					resultSet = statement.executeQuery(query);
 			
-				if(resultSet.next()) {
-					System.out.println(resultSet.getInt(1)+" , "+ 
+					if(resultSet.next()) {
+						System.out.println(resultSet.getInt(1)+" , "+ 
 										resultSet.getInt(2)+" , "+
 										resultSet.getString(3)+" , "+
 										resultSet.getString(4)+" , "+
 										resultSet.getString(5)+" , "+
 										resultSet.getString(6));
+					}
+					resultSet.close();
 				}
-				resultSet.close();
+			}
+			else
+			{
+				System.out.println("THERE ARE NO FLIGHTS WITH ONE CONNECTION.");
 			}
 			
 			
@@ -1675,39 +1719,55 @@ public class PittToursMenu
 			}
 			
 			//supply all the info for direct flights and connecting flights
-			System.out.println("All flights with available seats:\nflight number, airline id, departure_city, arrival_city, departure_time, arrival_time");
-			for(Integer i : flightNums)
-			{
-				query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
-				resultSet = statement.executeQuery(query);
+			System.out.println("\nAll flights with available seats:\nflight number, airline id, departure_city, arrival_city, departure_time, arrival_time");
 			
-				if(resultSet.next()) {
-					System.out.println(resultSet.getInt(1)+" , "+ 
+			if(flightNums.size() > 0)
+			{
+				System.out.println("\nDIRECT FLIGHTS: ");
+				for(Integer i : flightNums)
+				{
+					query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
+					resultSet = statement.executeQuery(query);
+			
+					if(resultSet.next()) {
+						System.out.println(resultSet.getInt(1)+" , "+ 
 										resultSet.getInt(2)+" , "+
 										resultSet.getString(3)+" , "+
 										resultSet.getString(4)+" , "+
 										resultSet.getString(5)+" , "+
 										resultSet.getString(6));
+					}
+					resultSet.close();
 				}
-				resultSet.close();
 			}
-			
-			for(Integer i : connectFlightNumber)
+			else
 			{
-				query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
-				resultSet = statement.executeQuery(query);
+				System.out.println("THERE ARE NO DIRECT FLIGHTS.");
+			}
+				
+			if(connectFlightNumber.size() > 0)
+			{
+				System.out.println("\nFLIGHTS WITH ONE CONNECTION: ");
+				for(Integer i : connectFlightNumber)
+				{
+					query = "select flight_number, airline_id, departure_city, arrival_city, departure_time, arrival_time from flight where flight_number = \'"+i+"\'";
+					resultSet = statement.executeQuery(query);
 			
-				if(resultSet.next()) {
-					System.out.println(resultSet.getInt(1)+" , "+ 
+					if(resultSet.next()) {
+						System.out.println(resultSet.getInt(1)+" , "+ 
 										resultSet.getInt(2)+" , "+
 										resultSet.getString(3)+" , "+
 										resultSet.getString(4)+" , "+
 										resultSet.getString(5)+" , "+
 										resultSet.getString(6));
+					}
+					resultSet.close();
 				}
-				resultSet.close();
 			}
-			
+			else
+			{
+				System.out.println("THERE ARE NO FLIGHTS WITH ONE CONNECTION.");
+			}
 			
 		}
 		catch(Exception e)
