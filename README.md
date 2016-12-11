@@ -12,3 +12,4 @@ Milstone 2
   
 Milestone 3  
   driver program = 3rd menu option within PittToursMenu.java  
+  plane.csv, airline.csv, schedule.csv, and pricing.csv are used in the driver to load data into the tables
