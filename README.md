@@ -11,4 +11,5 @@ Milstone 2
   Functions.sql - sql functions that were used for the tasks  
   
 Milestone 3  
-  driver program = 3rd menu option within PittToursMenu.java  
+  driver program = We added a 3rd menu option in PittToursMenu.java that runs our driver  
+  plane.csv, airline.csv, schedule.csv, and pricing.csv are used in the driver to load data into the tables
