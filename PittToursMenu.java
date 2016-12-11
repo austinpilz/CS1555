@@ -14,7 +14,6 @@ public class PittToursMenu
 	//GLOBAL VARIABLES
 	public static Scanner keyboard = new Scanner(System.in);
 
-		
 	//BELOW: the db setup variable from recitation 8 (TranDemo1.java)
 	private static Connection connection; //used to hold the jdbc connection to the DB
     private Statement statement; //used to create an instance of the connection
@@ -44,184 +43,196 @@ public class PittToursMenu
 	public void testDriver()
 	{
 		System.out.println("\n\n---------- PittTours Test Driver ----------\n");
-		System.out.println("Each function will be called 10 times.");
-		System.out.println("Press enter to continue...");
-		keyboard.nextLine();
-		
-		// Erase & Loading
-		System.out.println("1 - 4.) Loading");
-		loadAirline("airlines.csv",true);
-		loadPlaneInfo("plane.csv",true);
-		loadSchedule("schedule.csv",true);
-		loadPricing("pricing.csv",true);
-		
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-
-		// Add Customer
-		System.out.println("5.) Add Customer");
-		this.addCustomer("Mr", "Austin", "Pilz", "austinpilz@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Mrs", "Ethan", "Pilz", "ethanppilz@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Ms", "Alisha", "Forrest", "ah5@gmail.com", "4124291294", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Mr", "Test1", "Test1", "test1@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Mr", "Test2", "Test2", "test2@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Mr", "Test3", "Test3", "test3@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Mr", "Test4", "Test4", "test4@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Mr", "Test5", "Test5", "test5@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Mr", "Test6", "Test6", "test6@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		this.addCustomer("Mr", "Test7", "Test7", "test7@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-		
-		// Get Customer Info
-		System.out.println("6.) Show Customer Info");
-		this.showCustomerInfo("Austin", "");
-		this.showCustomerInfo("Austin", "P");
-		this.showCustomerInfo("Austin", "Pi");
-		this.showCustomerInfo("Austin", "Pil");
-		this.showCustomerInfo("Austin", "Pilz");
-		this.showCustomerInfo("Austin", "Pil");
-		this.showCustomerInfo("Austin", "Pi");
-		this.showCustomerInfo("Austin", "P");
-		this.showCustomerInfo("Austin", "Pi");
-		this.showCustomerInfo("Austin", "Pilz");
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-
-		// Find flight price
-		System.out.println("7.) Find Flight Prices");
-		this.findPriceByRoute("JFK", "CLE");
-		this.findPriceByRoute("PHI", "CLE");
-		this.findPriceByRoute("ATL", "PHI");
-		this.findPriceByRoute("CLE", "DFW");
-		this.findPriceByRoute("PIT", "DFW");
-		this.findPriceByRoute("LAX", "ATL");
-		this.findPriceByRoute("BWI", "ATL");
-		this.findPriceByRoute("PIT", "ORD");
-		this.findPriceByRoute("LAX", "PIT");
-		this.findPriceByRoute("DFW", "PIT");
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-
-		// Find all routes between two cities
-		System.out.println("8.) Find Routes Between Cities");
-		this.findAllRoutes("JFK", "CLE");
-		this.findAllRoutes("PHI", "CLE");
-		this.findAllRoutes("ATL", "PHI");
-		this.findAllRoutes("CLE", "DFW");
-		this.findAllRoutes("PIT", "DFW");
-		this.findAllRoutes("LAX", "ATL");
-		this.findAllRoutes("BWI", "ATL");
-		this.findAllRoutes("PIT", "ORD");
-		this.findAllRoutes("LAX", "PIT");
-		this.findAllRoutes("DFW", "PIT");
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-
-		// Find all routes between two cities (airline)
-		System.out.println("9.) Find Routes Between Cities (Airline)");
-		this.findAllRoutesByAirline("JFK", "CLE", "United Airlines");
-		this.findAllRoutesByAirline("PHI", "CLE", "All Nippon Airways");
-		this.findAllRoutesByAirline("ATL", "PHI", "Delta Air Lines");
-		this.findAllRoutesByAirline("CLE", "DFW", "United Airlines");
-		this.findAllRoutesByAirline("PIT", "DFW", "All Nippon Airways");
-		this.findAllRoutesByAirline("LAX", "ATL", "WestJet");
-		this.findAllRoutesByAirline("BWI", "ATL", "Southwest");
-		this.findAllRoutesByAirline("PIT", "ORD", "United Airlines");
-		this.findAllRoutesByAirline("LAX", "PIT", "Southwest");
-		this.findAllRoutesByAirline("DFW", "PIT", "WestJet");
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-
-		System.out.println("10.) add reservation");
-		// Add reservation
-		//this.addReservation();
-		//String cid, ArrayList<Integer> flights, ArrayList<String> dates, ArrayList<Integer> dayOfWeeks
-		System.out.println("10.) Add reservations");
-		ArrayList<Integer> a = new ArrayList<Integer>();
-		ArrayList<String> b = new ArrayList<String>();
-		ArrayList<Integer> c = new ArrayList<Integer>();
-		//test adding multiple
-		a.add(19);
-		a.add(20);
-		b.add("2016/12/10");
-		b.add("2016/12/10");
-		b.add("2016/12/10");
-		c.add(6);
-		c.add(6);
-		c.add(6);
-		this.addReservation("1",a,b,c);
-		
-		a.clear();
-		a.add(1);
-		this.addReservation("1",a,b,c);
-		this.addReservation("2",a,b,c);
-		a.clear();
-		a.add(3);
-		a.add(4);
-		a.add(5);
-		this.addReservation("1",a,b,c);
-		this.addReservation("2",a,b,c);
-		a.clear();
-		a.add(6);
-		this.addReservation("1",a,b,c);
-		this.addReservation("2",a,b,c);
-		a.clear();
-		a.add(14);
-		this.addReservation("1",a,b,c);
-		this.addReservation("2",a,b,c);
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-		
-		// Find all routes between two cities (with open seats)
-		//this.findAvailableSeats();
-		System.out.println("11.) Find Available Seats Between Cities");
-		this.findAvailableSeats("LAX","ATL",6,"2016/12/10");
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-		
-		// Find all routes between two cities (airline)
-		//this.findAvailableSeatsByAirline();
-		System.out.println("12.) Find Available Seats Between Cities (Airline)");
-		this.findAvailableSeatsByAirline("LAX","ATL",6,"2016/12/10","WestJet");
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
-		
-		// Show reservation info
-		System.out.println("15.) Show Reservation Info");
-		for (int i = 0; i < 10; i++)
+		System.out.println("YOU MUST RUN Schema.sql AND Functions.sql BEFORE TESTING");
+		System.out.print("Have you ran the sql files listed above? (y/n) ");
+		String answer = keyboard.nextLine().toLowerCase();
+		if(answer.equals("y"))
 		{
-			this.showReservationByNumber(i+"");
-		}
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
+			System.out.println("Each function will be called 10 times.");
+			System.out.println("Press enter to continue...");
+			keyboard.nextLine();
+		
+			// Loading
+			System.out.println("1 - 4.) Loading Airlines, Planes, Schedule, and Pricing");
+			loadAirline("airlines.csv",true);
+			loadPlaneInfo("plane.csv",true);
+			loadSchedule("schedule.csv",true);
+			loadPricing("pricing.csv",true);
+		
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
 
-		// Buy ticket from reservation
-		System.out.println("16.) Show Reservation Info");
-		for (int i = 0; i < 10; i++)
-		{
-			this.buyTicket(i+"");
-		}
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
+			// Add Customer
+			System.out.println("5.) Add Customer");
+			this.addCustomer("Mr", "Austin", "Pilz", "austinpilz@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Mrs", "Ethan", "Pilz", "ethanppilz@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Ms", "Alisha", "Forrest", "ah5@gmail.com", "4124291294", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Mr", "Test1", "Test1", "test1@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Mr", "Test2", "Test2", "test2@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Mr", "Test3", "Test3", "test3@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Mr", "Test4", "Test4", "test4@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Mr", "Test5", "Test5", "test5@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Mr", "Test6", "Test6", "test6@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			this.addCustomer("Mr", "Test7", "Test7", "test7@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
 		
-		// Manifest
-		System.out.println("6.) Show Reservation Info");
-		for (int i = 0; i < 10; i++)
-		{
-			generateManifest(i+"", "10-DEC-2016");
-		}
+			// Get Customer Info
+			System.out.println("6.) Show Customer Info");
+			this.showCustomerInfo("Austin", "");
+			this.showCustomerInfo("Austin", "P");
+			this.showCustomerInfo("Austin", "Pi");
+			this.showCustomerInfo("Austin", "Pil");
+			this.showCustomerInfo("Austin", "Pilz");
+			this.showCustomerInfo("Austin", "Pil");
+			this.showCustomerInfo("Austin", "Pi");
+			this.showCustomerInfo("Austin", "P");
+			this.showCustomerInfo("Austin", "Pi");
+			this.showCustomerInfo("Austin", "Pilz");
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+
+			// Find flight price
+			System.out.println("7.) Find Flight Prices");
+			this.findPriceByRoute("JFK", "CLE");
+			this.findPriceByRoute("PHI", "CLE");
+			this.findPriceByRoute("ATL", "PHI");
+			this.findPriceByRoute("CLE", "DFW");
+			this.findPriceByRoute("PIT", "DFW");
+			this.findPriceByRoute("LAX", "ATL");
+			this.findPriceByRoute("BWI", "ATL");
+			this.findPriceByRoute("PIT", "ORD");
+			this.findPriceByRoute("LAX", "PIT");
+			this.findPriceByRoute("DFW", "PIT");
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+
+			// Find all routes between two cities
+			System.out.println("8.) Find Routes Between Cities");
+			this.findAllRoutes("JFK", "CLE");
+			this.findAllRoutes("PHI", "CLE");
+			this.findAllRoutes("ATL", "PHI");
+			this.findAllRoutes("CLE", "DFW");
+			this.findAllRoutes("PIT", "DFW");
+			this.findAllRoutes("LAX", "ATL");
+			this.findAllRoutes("BWI", "ATL");
+			this.findAllRoutes("PIT", "ORD");
+			this.findAllRoutes("LAX", "PIT");
+			this.findAllRoutes("DFW", "PIT");
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+
+			// Find all routes between two cities (airline)
+			System.out.println("9.) Find Routes Between Cities (Airline)");
+			this.findAllRoutesByAirline("JFK", "CLE", "United Airlines");
+			this.findAllRoutesByAirline("PHI", "CLE", "All Nippon Airways");
+			this.findAllRoutesByAirline("ATL", "PHI", "Delta Air Lines");
+			this.findAllRoutesByAirline("CLE", "DFW", "United Airlines");
+			this.findAllRoutesByAirline("PIT", "DFW", "All Nippon Airways");
+			this.findAllRoutesByAirline("LAX", "ATL", "WestJet");
+			this.findAllRoutesByAirline("BWI", "ATL", "Southwest");
+			this.findAllRoutesByAirline("PIT", "ORD", "United Airlines");
+			this.findAllRoutesByAirline("LAX", "PIT", "Southwest");
+			this.findAllRoutesByAirline("DFW", "PIT", "WestJet");
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+
+			System.out.println("10.) add reservations");
+			// Add reservation
+			//this.addReservation();
+			//String cid, ArrayList<Integer> flights, ArrayList<String> dates, ArrayList<Integer> dayOfWeeks
+			System.out.println("10.) Add reservations");
+			ArrayList<Integer> a = new ArrayList<Integer>();
+			ArrayList<String> b = new ArrayList<String>();
+			ArrayList<Integer> c = new ArrayList<Integer>();
+			//test adding reservation for multiple flights
+			a.add(19);
+			a.add(20);
+			b.add("2016/12/10");
+			b.add("2016/12/10");
+			b.add("2016/12/10");
+			c.add(6);
+			c.add(6);
+			c.add(6);
+			this.addReservation("1",a,b,c);
+			this.addReservation("2",a,b,c);
 		
-		System.out.println("");
-		for (int i = 0; i < 10; i++)
-		{
-			eraseDatabase();
-			if(i < 9)
+			a.clear();
+			a.add(1);
+			this.addReservation("1",a,b,c);
+			this.addReservation("2",a,b,c);
+			a.clear();
+			a.add(3);
+			a.add(4);
+			a.add(5);
+			this.addReservation("1",a,b,c);
+			this.addReservation("2",a,b,c);
+			a.clear();
+			a.add(6);
+			this.addReservation("1",a,b,c);
+			this.addReservation("2",a,b,c);
+			a.clear();
+			a.add(14);
+			this.addReservation("1",a,b,c);
+			this.addReservation("2",a,b,c);
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+		
+			// Find all routes between two cities (with open seats)
+			//this.findAvailableSeats();
+			System.out.println("11.) Find Available Seats Between Cities");
+			this.findAvailableSeats("LAX","ATL",6,"2016/12/10");
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+		
+			// Find all routes between two cities (airline)
+			//this.findAvailableSeatsByAirline();
+			System.out.println("12.) Find Available Seats Between Cities (Airline)");
+			this.findAvailableSeatsByAirline("LAX","ATL",6,"2016/12/10","WestJet");
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+		
+			// Show reservation info
+			System.out.println("15.) Show Reservation Info");
+			for (int i = 0; i < 10; i++)
 			{
-				loadAirline("airlines.csv",false);
-				loadPlaneInfo("plane.csv",false);
-				loadSchedule("schedule.csv",false);
-				loadPricing("pricing.csv",false);
+				this.showReservationByNumber(i+"");
+			}
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+
+			// Buy ticket from reservation
+			System.out.println("16.) Show Reservation Info");
+			for (int i = 0; i < 10; i++)
+			{
+				this.buyTicket(i+"");
+			}
+			System.out.println("Press enter to continue... ");
+			keyboard.nextLine();
+		
+			// Manifest
+			System.out.println("16.) Show Reservation Info");
+			generateManifest(19+"", "10-DEC-2016");
+			generateManifest(20+"", "10-DEC-2016");
+			generateManifest(1+"", "10-DEC-2016");
+			generateManifest(3+"", "10-DEC-2016");
+			generateManifest(4+"", "10-DEC-2016");
+			generateManifest(5+"", "10-DEC-2016");
+			generateManifest(6+"", "10-DEC-2016");
+			generateManifest(14+"", "10-DEC-2016");
+			generateManifest(15+"", "10-DEC-2016");
+		
+			System.out.println("17. Erase Database and Load Data");
+			for (int i = 0; i < 10; i++)
+			{
+				eraseDatabase();
+				if(i < 9)
+				{
+					loadAirline("airlines.csv",false);
+					loadPlaneInfo("plane.csv",false);
+					loadSchedule("schedule.csv",false);
+					loadPricing("pricing.csv",false);
+				}
 			}
 		}
 	}
@@ -1934,15 +1945,17 @@ public class PittToursMenu
 							String ws = resultSet.getString(2);
 							if(ws.charAt(dayOfWeeks.get(i)) == '-')
 							{
-								connection.rollback();
-								throw new Exception("ERROR: The flight you want does not fly on that day of the week!\n\n");
+								//connection.rollback();
+								System.out.println("ERROR: The flight you want does not fly on that day of the week!\n\n");
+								return;
 							}
 						}
 					}
 					else
 					{
 						//connection.rollback();
-						throw new Exception("ERROR: There were no flights found for that flight number!\n\n\n");
+						System.out.println("ERROR: There were no flights found for that flight number!\n\n\n");
+						return;
 					}
 					resultSet.close();
 					
@@ -1961,7 +1974,8 @@ public class PittToursMenu
 					else
 					{
 						//connection.rollback();
-						throw new Exception("ERROR: You must register as a customer before you can book a flight!\n\n\n");
+						System.out.println("You must register as a customer before you can book a flight!\n\n\n");
+						return;
 					}
 					resultSet.close();
 					
@@ -2000,7 +2014,8 @@ public class PittToursMenu
 						if(plane == null)
 						{
 							//connection.rollback();
-							throw new Exception("Cannot complete reservation. There aren't enough seats on flight "+flights.get(i));
+							System.out.println("Cannot complete reservation. There aren't enough seats on flight "+flights.get(i));
+							return;
 						}
 					}
 				}
