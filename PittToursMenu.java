@@ -45,45 +45,21 @@ public class PittToursMenu
 	{
 		System.out.println("\n\n---------- PittTours Test Driver ----------\n");
 		System.out.println("Each function will be called 10 times.");
-
-		String airlineFile = "";
-		System.out.print("Please enter the location of the AIRLINE .csv file: ");
-		airlineFile = keyboard.nextLine();
-
-		String planeFile = "";
-		System.out.print("Please enter the location of the PLANE .csv file: ");
-		planeFile = keyboard.nextLine();
-
-		String scheduleFile = "";
-		System.out.print("Please enter the location of the SCHEDULE .csv file: ");
-		scheduleFile = keyboard.nextLine();
-
-		String pricingFile = "";
-		System.out.print("Please enter the location of the PRICING .csv file: ");
-		pricingFile = keyboard.nextLine();
-
-
+		System.out.println("Press enter to continue...");
+		keyboard.nextLine();
+		
 		// Erase & Loading
-		System.out.println("1 - 5.) Erase Database & Loading");
-		for (int i = 0; i < 10; i++)
-		{
-			eraseDatabase();
-			loadAirline(airlineFile);
-			loadPlaneInfo(planeFile);
-			loadSchedule(scheduleFile);
-			loadPricing(pricingFile);
-		}
+		System.out.println("1 - 4.) Loading");
+		loadAirline("airlines.csv",true);
+		loadPlaneInfo("plane.csv",true);
+		loadSchedule("schedule.csv",true);
+		loadPricing("pricing.csv",true);
+		
 		System.out.println("Press enter to continue... ");
 		keyboard.nextLine();
 
-		// Manifest
-		System.out.println("6.) Show Reservation Info");
-		for (int i = 0; i < 10; i++) {
-			this.generateManifest(i, "16-NOV-2016");
-		}
-
 		// Add Customer
-		System.out.println("7.) Add Customer");
+		System.out.println("5.) Add Customer");
 		this.addCustomer("Mr", "Austin", "Pilz", "austinpilz@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
 		this.addCustomer("Mrs", "Ethan", "Pilz", "ethanppilz@gmail.com", "4127154340", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
 		this.addCustomer("Ms", "Alisha", "Forrest", "ah5@gmail.com", "4124291294", "12345", "18-NOV-16", "111 Charles Dr", "Carnegie", "PA", "1");
@@ -98,7 +74,7 @@ public class PittToursMenu
 		keyboard.nextLine();
 		
 		// Get Customer Info
-		System.out.println("8.) Show Customer Info");
+		System.out.println("6.) Show Customer Info");
 		this.showCustomerInfo("Austin", "");
 		this.showCustomerInfo("Austin", "P");
 		this.showCustomerInfo("Austin", "Pi");
@@ -109,9 +85,11 @@ public class PittToursMenu
 		this.showCustomerInfo("Austin", "P");
 		this.showCustomerInfo("Austin", "Pi");
 		this.showCustomerInfo("Austin", "Pilz");
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
 
 		// Find flight price
-		System.out.println("9.) Find Flight Prices");
+		System.out.println("7.) Find Flight Prices");
 		this.findPriceByRoute("JFK", "CLE");
 		this.findPriceByRoute("PHI", "CLE");
 		this.findPriceByRoute("ATL", "PHI");
@@ -120,11 +98,13 @@ public class PittToursMenu
 		this.findPriceByRoute("LAX", "ATL");
 		this.findPriceByRoute("BWI", "ATL");
 		this.findPriceByRoute("PIT", "ORD");
-		this.findPriceByRoute("LAX", "PITT");
-		this.findPriceByRoute("DFW", "PITT");
+		this.findPriceByRoute("LAX", "PIT");
+		this.findPriceByRoute("DFW", "PIT");
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
 
 		// Find all routes between two cities
-		System.out.println("10.) Find Routes Between Cities");
+		System.out.println("8.) Find Routes Between Cities");
 		this.findAllRoutes("JFK", "CLE");
 		this.findAllRoutes("PHI", "CLE");
 		this.findAllRoutes("ATL", "PHI");
@@ -133,43 +113,108 @@ public class PittToursMenu
 		this.findAllRoutes("LAX", "ATL");
 		this.findAllRoutes("BWI", "ATL");
 		this.findAllRoutes("PIT", "ORD");
-		this.findAllRoutes("LAX", "PITT");
-		this.findAllRoutes("DFW", "PITT");
+		this.findAllRoutes("LAX", "PIT");
+		this.findAllRoutes("DFW", "PIT");
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
 
 		// Find all routes between two cities (airline)
-		System.out.println("11.) Find Routes Between Cities (Airline)");
-		this.findAllRoutesByAirline("JFK", "CLE", "1");
-		this.findAllRoutesByAirline("PHI", "CLE", "1");
-		this.findAllRoutesByAirline("ATL", "PHI", "1");
-		this.findAllRoutesByAirline("CLE", "DFW", "1");
-		this.findAllRoutesByAirline("PIT", "DFW", "2");
-		this.findAllRoutesByAirline("LAX", "ATL", "1");
-		this.findAllRoutesByAirline("BWI", "ATL", "4");
-		this.findAllRoutesByAirline("PIT", "ORD", "1");
-		this.findAllRoutesByAirline("LAX", "PITT", "5");
-		this.findAllRoutesByAirline("DFW", "PITT", "1");
+		System.out.println("9.) Find Routes Between Cities (Airline)");
+		this.findAllRoutesByAirline("JFK", "CLE", "United Airlines");
+		this.findAllRoutesByAirline("PHI", "CLE", "All Nippon Airways");
+		this.findAllRoutesByAirline("ATL", "PHI", "Delta Air Lines");
+		this.findAllRoutesByAirline("CLE", "DFW", "United Airlines");
+		this.findAllRoutesByAirline("PIT", "DFW", "All Nippon Airways");
+		this.findAllRoutesByAirline("LAX", "ATL", "WestJet");
+		this.findAllRoutesByAirline("BWI", "ATL", "Southwest");
+		this.findAllRoutesByAirline("PIT", "ORD", "United Airlines");
+		this.findAllRoutesByAirline("LAX", "PIT", "Southwest");
+		this.findAllRoutesByAirline("DFW", "PIT", "WestJet");
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
 
-		// Find all routes between two cities (with open seats)
-		//this.findAvailableSeats();
-
-		// Find all routes between two cities (airline)
-		//this.findAvailableSeatsByAirline();
-
+		System.out.println("10.) add reservation\n\tTest manually via user input");
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
 		// Add reservation
 		//this.addReservation();
-
+		//String cid, ArrayList<Integer> flights, ArrayList<String> dates, ArrayList<Integer> dayOfWeeks
+		/*System.out.println("10.) Add reservations");
+		ArrayList<Integer> a = new ArrayList<Integer>();
+		ArrayList<String> b = new ArrayList<String>();
+		ArrayList<Integer> c = new ArrayList<Integer>();
+		a.add(19);
+		b.add("2016/12/10");
+		c.add(6);
+		this.addReservation("1",a,b,c);
+		
+		a.remove(19);
+		a.add(1);
+		this.addReservation("1",a,b,c);
+		this.addReservation("2",a,b,c);
+		a.remove(1);
+		a.add(3);
+		this.addReservation("1",a,b,c);
+		this.addReservation("2",a,b,c);
+		a.remove(3);
+		a.add(6);
+		this.addReservation("1",a,b,c);
+		this.addReservation("2",a,b,c);
+		a.remove(6);
+		a.add(14);
+		this.addReservation("1",a,b,c);
+		this.addReservation("2",a,b,c);*/
+		
+		// Find all routes between two cities (with open seats)
+		//this.findAvailableSeats();
+		System.out.println("11.) Find Available Seats Between Cities");
+		this.findAvailableSeats("LAX","ATL",6,"2016/12/10");
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
+		
+		// Find all routes between two cities (airline)
+		//this.findAvailableSeatsByAirline();
+		System.out.println("12.) Find Available Seats Between Cities (Airline)");
+		this.findAvailableSeatsByAirline("LAX","ATL",6,"2016/12/10","WestJet");
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
+		
 		// Show reservation info
 		System.out.println("15.) Show Reservation Info");
 		for (int i = 0; i < 10; i++)
 		{
 			this.showReservationByNumber(i+"");
 		}
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
 
 		// Buy ticket from reservation
 		System.out.println("16.) Show Reservation Info");
 		for (int i = 0; i < 10; i++)
 		{
 			this.buyTicket(i+"");
+		}
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
+		
+		// Manifest
+		System.out.println("6.) Show Reservation Info");
+		for (int i = 0; i < 10; i++)
+		{
+			generateManifest(i+"", "16-NOV-2016");
+		}
+		
+		System.out.println("");
+		for (int i = 0; i < 10; i++)
+		{
+			eraseDatabase();
+			if(i < 9)
+			{
+				loadAirline("airlines.csv",false);
+				loadPlaneInfo("plane.csv",false);
+				loadSchedule("schedule.csv",false);
+				loadPricing("pricing.csv",false);
+			}
 		}
 	}
 			
@@ -213,13 +258,13 @@ public class PittToursMenu
 					sel = "";
 					System.out.print("Please enter the location of the .csv file: ");
 					sel = keyboard.nextLine();
-					loadAirline(sel);
+					loadAirline(sel,true);
 					break;
 				case 3:
 					sel = "";
 					System.out.print("Please enter the location of the .csv file: ");
 					sel = keyboard.nextLine();
-					loadSchedule(sel);
+					loadSchedule(sel,true);
 					break;
 				case 4:
 					sel = "";
@@ -230,7 +275,7 @@ public class PittToursMenu
 					{
 						System.out.print("Please enter the location of the .csv file: ");
 						sel = keyboard.nextLine();
-						loadPricing(sel);
+						loadPricing(sel,true);
 					}
 					else if(choice.equals("C"))
 					{
@@ -246,7 +291,6 @@ public class PittToursMenu
 						//We need the airline name because we allowed multiple airlines to service one route, and assumed that different airlines can have different prices for a route
 						System.out.print("Please enter the airline name: ");
 						airline = keyboard.nextLine();
-						System.out.println("here");
 						changePricing(d,a,Integer.parseInt(hp),Integer.parseInt(lp),airline);
 					}
 					else
@@ -258,7 +302,7 @@ public class PittToursMenu
 					sel = "";
 					System.out.print("Please enter the location of the .csv file: ");
 					sel = keyboard.nextLine();
-					loadPlaneInfo(sel);
+					loadPlaneInfo(sel,true);
 					break;
 				case 6: 
 					String flightNumber = "";
@@ -316,7 +360,7 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has ariline info
 	//inserts it into the database
-	public void loadAirline(String selection)
+	public void loadAirline(String selection, boolean printInfo)
 	{			
 		try
 		{
@@ -334,17 +378,20 @@ public class PittToursMenu
 				prepStatement.executeUpdate();
 			}
 			
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery("select * from airline");
-			System.out.println("\nAfter the insert, data is...\n");
-			while(resultSet.next()) {
-			System.out.println(
-				resultSet.getString(1) + ", " +
-				resultSet.getString(2) + ", " +
-				resultSet.getString(3) + ", " +
-				resultSet.getInt(4));
+			if(printInfo)
+			{
+				statement = connection.createStatement();
+				resultSet = statement.executeQuery("select * from airline");
+				System.out.println("\nAfter the insert, data is...\n");
+				while(resultSet.next()) {
+				System.out.println(
+					resultSet.getString(1) + ", " +
+					resultSet.getString(2) + ", " +
+					resultSet.getString(3) + ", " +
+					resultSet.getInt(4));
+				}
+				resultSet.close();
 			}
-			resultSet.close();
 		}
 		catch(Exception e)
 		{
@@ -365,7 +412,7 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has schedule info
 	//inserts it into the database
-	public void loadSchedule(String selection)
+	public void loadSchedule(String selection, boolean printInfo)
 	{	
 		try
 		{
@@ -387,21 +434,24 @@ public class PittToursMenu
 				prepStatement.executeUpdate();
 			}
 			
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery("select * from flight");
-			System.out.println("\nAfter the insert, data is...\n");
-			while(resultSet.next()) {
-			System.out.println(
-				resultSet.getInt(1) + ", " +
-				resultSet.getInt(2) + ", " +
-				resultSet.getString(3) + ", " +
-				resultSet.getString(4) + ", " +
-				resultSet.getString(5) + ", " +
-				resultSet.getString(6) + ", " +
-				resultSet.getString(7) + ", " +
-				resultSet.getString(8));
+			if(printInfo)
+			{
+				statement = connection.createStatement();
+				resultSet = statement.executeQuery("select * from flight");
+				System.out.println("\nAfter the insert, data is...\n");
+				while(resultSet.next()) {
+				System.out.println(
+					resultSet.getInt(1) + ", " +
+					resultSet.getInt(2) + ", " +
+					resultSet.getString(3) + ", " +
+					resultSet.getString(4) + ", " +
+					resultSet.getString(5) + ", " +
+					resultSet.getString(6) + ", " +
+					resultSet.getString(7) + ", " +
+					resultSet.getString(8));
+				}
+				resultSet.close();
 			}
-			resultSet.close();
 		}
 		catch(Exception e)
 		{
@@ -422,7 +472,7 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has pricing info
 	//inserts it into the database
-	public void loadPricing(String selection)
+	public void loadPricing(String selection, boolean printInfo)
 	{
 		try
 		{
@@ -441,18 +491,21 @@ public class PittToursMenu
 				prepStatement.executeUpdate();
 			}
 			
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery("select * from price");
-			System.out.println("\nAfter the insert, data is...\n");
-			while(resultSet.next()) {
-			System.out.println(
-				resultSet.getString(1) + ", " +
-				resultSet.getString(2) + ", " +
-				resultSet.getString(3) + ", " +
-				resultSet.getInt(4) + ", " +
-				resultSet.getInt(5));
+			if(printInfo)
+			{
+				statement = connection.createStatement();
+				resultSet = statement.executeQuery("select * from price");
+				System.out.println("\nAfter the insert, data is...\n");
+				while(resultSet.next()) {
+				System.out.println(
+					resultSet.getString(1) + ", " +
+					resultSet.getString(2) + ", " +
+					resultSet.getString(3) + ", " +
+					resultSet.getInt(4) + ", " +
+					resultSet.getInt(5));
+				}
+				resultSet.close();
 			}
-			resultSet.close();
 		}
 		catch(Exception e)
 		{
@@ -529,7 +582,7 @@ public class PittToursMenu
 	//outputs: none
 	//Description: Asks user for .csv file which has plane info
 	//inserts it into the database
-	public void loadPlaneInfo(String selection)
+	public void loadPlaneInfo(String selection, boolean printInfo)
 	{
 		try
 		{
@@ -541,24 +594,27 @@ public class PittToursMenu
 				String[] line = br.readLine().split(",");
 				if(line.length == 6)
 				{
-					query = "insert into plane values ("+line[0]+","+line[1]+","+line[2]+",TO_DATE(\'"+line[3]+"\',\'yyyy/MM/dd/\'),"+line[4]+","+line[5]+")";
-					statement.executeUpdate(query);
+					query = "insert into plane values (\'"+line[0]+"\',\'"+line[1]+"\',"+line[2]+",TO_DATE(\'"+line[3]+"\',\'yyyy/MM/dd/\'),"+line[4]+","+line[5]+")";
+					statement.execute(query);
 				}
 			}
 			
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery("select * from plane");
-			System.out.println("\nAfter the insert, data is...\n");
-			while(resultSet.next()) {
-			System.out.println(
-				resultSet.getString(1) + ", " +
-				resultSet.getString(2) + ", " +
-				resultSet.getInt(3) + ", " +
-				resultSet.getDate(4) + ", " + 
-				resultSet.getInt(5) + ", " +
-				resultSet.getString(6));
+			if(printInfo)
+			{
+				statement = connection.createStatement();
+				resultSet = statement.executeQuery("select * from plane");
+				System.out.println("\nAfter the insert, data is...\n");
+				while(resultSet.next()) {
+				System.out.println(
+					resultSet.getString(1) + ", " +
+					resultSet.getString(2) + ", " +
+					resultSet.getInt(3) + ", " +
+					resultSet.getDate(4) + ", " + 
+					resultSet.getInt(5) + ", " +
+					resultSet.getString(6));
+				}
+				resultSet.close();
 			}
-			resultSet.close();
 		}
 		catch(Exception e)
 		{
@@ -593,13 +649,19 @@ public class PittToursMenu
 				prepStatement.setString(2,flightDate+"");
 				resultSet = prepStatement.executeQuery();
 
-				System.out.format("%15s%15s%15s\n", new String[]{"Salutation", "First Name", "Last Name"});
-
-				while (resultSet.next())
+				if(resultSet.isBeforeFirst())
 				{
-					System.out.format("%15s%15s%15s\n", new String[]{resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name")});
-				}
+					System.out.format("%15s%15s%15s\n", new String[]{"Salutation", "First Name", "Last Name"});
 
+					while (resultSet.next())
+					{
+						System.out.format("%15s%15s%15s\n", new String[]{resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name")});
+					}
+				}
+				else
+				{
+					System.out.println("\tNo one is booked on this flight.");
+				}
 				System.out.println("\n\n\n");
 
 				resultSet.close();
@@ -917,11 +979,10 @@ public class PittToursMenu
 			prepStatement.setString(2, lastName);
 			resultSet = prepStatement.executeQuery();
 
-			if (resultSet.getFetchSize() != 0)
+			if (resultSet.isBeforeFirst())
 			{
-
 				System.out.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", new String[]{"PittRewards #", "Salutation",  "First Name", "Last Name", "Street", "City", "State", "Phone", "Email", "FreqMiles#", "CC#", "CCExpire"});
-
+				
 				while (resultSet.next())
 				{
 					System.out.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n", new String[]{resultSet.getString("CID"), resultSet.getString("Salutation"), resultSet.getString("First_Name"), resultSet.getString("Last_Name"), resultSet.getString("Street"), resultSet.getString("City"), resultSet.getString("State"), resultSet.getString("Phone"), resultSet.getString("Email"), resultSet.getString("Frequent_Miles"), resultSet.getString("Credit_Card_Num"), resultSet.getString("Credit_Card_Expire")});
@@ -1296,7 +1357,7 @@ public class PittToursMenu
 			}
 
 			//supply all the info for direct flights and connecting flights
-			System.out.println("\nAll flights between " + dc + " and " + ac);
+			System.out.println("\nAll flights between " + dc + " and " + ac +" on airline "+airline_name);
 			System.out.format("%15s%15s%15s%15s%15s%15s2\n", new String[]{"Flight #", "Airline ID",  "Departure City", "Departure Time", "Arrival City", "Arrival Time"});
 			
 			if(flightNums.size() > 0)
@@ -1835,7 +1896,6 @@ public class PittToursMenu
 	print an error message*/
 	public void addReservation(String cid, ArrayList<Integer> flights, ArrayList<String> dates, ArrayList<Integer> dayOfWeeks)
 	{
-		boolean cannotReserve = false; //if we can't book one or more of the flights, we cannot make the reservation
 		String creditNum = "",airline_id = "", plane = "", sc = "", ec = "";
 		java.sql.Date currentDate = java.sql.Date.valueOf(dates.get(0).replace("/","-"));
 		int numReservations = 0, rnum = 0;
@@ -1846,11 +1906,11 @@ public class PittToursMenu
 			try
 			{
 				//isolating the reservation
-				connection.setAutoCommit(false);
-				connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				//connection.setAutoCommit(false);
+				//connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 				statement = connection.createStatement();
 				
-				for(int i = 0; i < flights.size() && !cannotReserve; i++)
+				for(int i = 0; i < flights.size(); i++)
 				{
 					//check to see that the flight number actually exists
 					query = "SELECT airline_id, weekly_schedule FROM flight WHERE Flight_Number = ?";
@@ -1858,7 +1918,7 @@ public class PittToursMenu
 					prepStatement.setString(1, flights.get(i)+"");
 					resultSet = prepStatement.executeQuery();
 					
-					if (resultSet.getFetchSize() != 0)
+					if (resultSet.isBeforeFirst())
 					{
 						if(resultSet.next())
 						{
@@ -1873,7 +1933,7 @@ public class PittToursMenu
 					}
 					else
 					{
-						connection.rollback();
+						//connection.rollback();
 						throw new Exception("ERROR: There were no flights found for that flight number!\n\n\n");
 					}
 					resultSet.close();
@@ -1884,7 +1944,7 @@ public class PittToursMenu
 					prepStatement.setString(1, cid);
 					resultSet = prepStatement.executeQuery();
 
-					if (resultSet.getFetchSize() != 0)
+					if (resultSet.isBeforeFirst())
 					{
 						if(resultSet.next()) {
 							creditNum = resultSet.getString("CREDIT_CARD_NUM");
@@ -1892,7 +1952,7 @@ public class PittToursMenu
 					}
 					else
 					{
-						connection.rollback();
+						//connection.rollback();
 						throw new Exception("ERROR: You must register as a customer before you can book a flight!\n\n\n");
 					}
 					resultSet.close();
@@ -1931,7 +1991,7 @@ public class PittToursMenu
 						
 						if(plane == null)
 						{
-							connection.rollback();
+							//connection.rollback();
 							throw new Exception("Cannot complete reservation. There aren't enough seats on flight "+flights.get(i));
 						}
 					}
@@ -1988,7 +2048,7 @@ public class PittToursMenu
 					statement.executeUpdate(query);
 					
 				}
-				connection.commit();
+				//connection.commit();
 				System.out.println("Booking flight was successful. Your reservation Number is: "+rnum);
 
 			} catch (Exception e) {
@@ -2031,7 +2091,7 @@ public class PittToursMenu
 				prepStatement.setString(1, reservationNumber+"");
 				resultSet = prepStatement.executeQuery();
 
-				if (resultSet.getFetchSize() != 0)
+				if (resultSet.isBeforeFirst())
 				{
 
 					System.out.format("%15s%15s%15s%15s%15s\n", new String[]{"Flight #", "Dept City", "Dept Time", "Arr City", "Arr Time"});

@@ -46,7 +46,7 @@ CREATE TABLE Plane (
   Year int,
   Owner_ID varchar2(5),
   Constraint plane_PK primary key (Plane_Type, Owner_ID) deferrable,
-  Constraint plane_FK foreign key (Owner_ID) references Airline( Airline_ID ) initially deferred deferrable);
+  Constraint plane_FK foreign key (Owner_ID) references Airline( Airline_ID ) on delete cascade initially deferred deferrable);
   
   /* The "Plane_Type" field is essentially the plane's name (ex B712), hence PK */
   
@@ -66,8 +66,8 @@ CREATE TABLE Flight (
   Arrival_Time varchar2(4),
   Weekly_Schedule varchar2(7),
   Constraint flight_PK primary key (Flight_Number) deferrable,
-  Constraint flight_FK1 foreign key (Plane_Type, Airline_ID) references Plane(Plane_Type, Owner_ID) initially deferred deferrable,
-  Constraint flight_FK2 foreign key (Airline_ID) references Airline(Airline_ID) initially deferred deferrable);
+  Constraint flight_FK1 foreign key (Plane_Type, Airline_ID) references Plane(Plane_Type, Owner_ID) on delete cascade initially deferred deferrable,
+  Constraint flight_FK2 foreign key (Airline_ID) references Airline(Airline_ID) on delete cascade initially deferred deferrable);
   
   /* The handout says "plane_type" of this table should be a char instead of varchar, but you get an error when you reference that field from Plane that has another data type - assuming it should be matching data type*/
   
@@ -85,7 +85,7 @@ CREATE TABLE Price (
   High_Price int,
   Low_Price int,
   Constraint price_PK primary key (Departure_City, Arrival_City, Airline_ID) deferrable,
-  Constraint price_FK foreign key (Airline_ID) references Airline(Airline_ID) initially deferred deferrable,
+  Constraint price_FK foreign key (Airline_ID) references Airline(Airline_ID) on delete cascade initially deferred deferrable,
   Constraint price_CS CHECK (Departure_City <> Arrival_City));
   
   /* Assumptions: Verify that Arrival city and departure city are not the same */
@@ -128,7 +128,7 @@ CREATE TABLE Reservation (
   Reservation_Date date,
   Ticketed varchar(1),
   Constraint reservation_PK primary key (Reservation_Number) deferrable,
-  Constraint reservation_FK foreign key (CID) references Customer(CID) initially deferred deferrable);
+  Constraint reservation_FK foreign key (CID) references Customer(CID) on delete cascade initially deferred deferrable);
 
 
 /* TABLE: Reservation_Detail */
@@ -141,7 +141,7 @@ CREATE TABLE Reservation_Detail (
   Leg int,
   Constraint reservation_detail_PK primary key (Reservation_Number, Leg) deferrable,
   Constraint reservation_detail_FK1 foreign key (Reservation_Number) references Reservation(Reservation_number) on delete cascade initially deferred deferrable,
-  Constraint reservation_detail_FK2 foreign key (Flight_Number) references Flight(Flight_Number) initially deferred deferrable);
+  Constraint reservation_detail_FK2 foreign key (Flight_Number) references Flight(Flight_Number) on delete cascade initially deferred deferrable);
 
 
 /* TABLE: Date */
@@ -358,10 +358,11 @@ DECLARE numReserved int;
 		planeOwner varchar2(5);
 BEGIN
 	--count the number of reserved seats for the current flight
-	select count(distinct reservation_number) into numReserved from reservation_detail where flight_number = (:new.Flight_Number);
+	select count(*) into numReserved from reservation_detail where flight_number = (:new.Flight_Number);
 	numReserved := numReserved + 1; --add one because it is BEFORE insert, count does not account for the row we are adding
 	--get the capacity and owner of the plane
-	select plane_capacity, owner_id into planeCap, planeOwner from (flight natural join plane) where flight_number = :new.Flight_Number;
+	select airline_id,plane_type into planeOwner, planeType from flight where flight_number = :new.Flight_Number;
+	select plane_capacity into planeCap from plane where owner_id = airline_id and plane_type = planeType;
 	if (numReserved > planeCap) then --if there are more reservations than space on the flight
 		planeType := findPlane(numReserved,planeOwner); --see if a bigger plane can be found
 		if planeType IS NULL then
@@ -431,6 +432,5 @@ BEGIN
 	end loop;
 END;
 /
-
 commit;
 
