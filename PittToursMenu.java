@@ -133,37 +133,45 @@ public class PittToursMenu
 		System.out.println("Press enter to continue... ");
 		keyboard.nextLine();
 
-		System.out.println("10.) add reservation\n\tTest manually via user input");
-		System.out.println("Press enter to continue... ");
-		keyboard.nextLine();
+		System.out.println("10.) add reservation");
 		// Add reservation
 		//this.addReservation();
 		//String cid, ArrayList<Integer> flights, ArrayList<String> dates, ArrayList<Integer> dayOfWeeks
-		/*System.out.println("10.) Add reservations");
+		System.out.println("10.) Add reservations");
 		ArrayList<Integer> a = new ArrayList<Integer>();
 		ArrayList<String> b = new ArrayList<String>();
 		ArrayList<Integer> c = new ArrayList<Integer>();
+		//test adding multiple
 		a.add(19);
+		a.add(20);
 		b.add("2016/12/10");
+		b.add("2016/12/10");
+		b.add("2016/12/10");
+		c.add(6);
+		c.add(6);
 		c.add(6);
 		this.addReservation("1",a,b,c);
 		
-		a.remove(19);
+		a.clear();
 		a.add(1);
 		this.addReservation("1",a,b,c);
 		this.addReservation("2",a,b,c);
-		a.remove(1);
+		a.clear();
 		a.add(3);
+		a.add(4);
+		a.add(5);
 		this.addReservation("1",a,b,c);
 		this.addReservation("2",a,b,c);
-		a.remove(3);
+		a.clear();
 		a.add(6);
 		this.addReservation("1",a,b,c);
 		this.addReservation("2",a,b,c);
-		a.remove(6);
+		a.clear();
 		a.add(14);
 		this.addReservation("1",a,b,c);
-		this.addReservation("2",a,b,c);*/
+		this.addReservation("2",a,b,c);
+		System.out.println("Press enter to continue... ");
+		keyboard.nextLine();
 		
 		// Find all routes between two cities (with open seats)
 		//this.findAvailableSeats();
@@ -201,7 +209,7 @@ public class PittToursMenu
 		System.out.println("6.) Show Reservation Info");
 		for (int i = 0; i < 10; i++)
 		{
-			generateManifest(i+"", "16-NOV-2016");
+			generateManifest(i+"", "10-DEC-2016");
 		}
 		
 		System.out.println("");
@@ -2194,8 +2202,8 @@ public class PittToursMenu
 		System.out.println("Welcome to PittFlights...");
 
 		String username,password;
-		username = "username"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
-		password = "password";
+		username = "ahf5"; //MUST EDIT THIS BEFORE RUNNING -- put in your pitt username/password
+		password = "13+SCtoPITT+17";
 		
 		try
 		{

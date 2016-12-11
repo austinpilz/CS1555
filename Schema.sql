@@ -362,7 +362,7 @@ BEGIN
 	numReserved := numReserved + 1; --add one because it is BEFORE insert, count does not account for the row we are adding
 	--get the capacity and owner of the plane
 	select airline_id,plane_type into planeOwner, planeType from flight where flight_number = :new.Flight_Number;
-	select plane_capacity into planeCap from plane where owner_id = airline_id and plane_type = planeType;
+	select plane_capacity into planeCap from plane where owner_id = planeOwner and plane_type = planeType;
 	if (numReserved > planeCap) then --if there are more reservations than space on the flight
 		planeType := findPlane(numReserved,planeOwner); --see if a bigger plane can be found
 		if planeType IS NULL then

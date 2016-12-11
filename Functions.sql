@@ -123,6 +123,10 @@ variable rowsU number;
 exec purchaseTicket('999', :rowsU);
 print rowsU; */
 
+---FOR DRIVER---
+insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (1, 'Mrs', 'Raymond', 'Scott', 'rscott0@princeton.edu', '5291780866776450', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '70 Westridge Park', 'Plano', 'TX', '8887311457', 9);
+insert into Customer (cid, salutation, first_name, last_name, email, Credit_Card_Num, Credit_Card_Expire, Street, City, State, Phone, Frequent_Miles) values (2, 'Mrs', 'Amanda', 'Garrett', 'agarrett1@unicef.org', '2928440613182430', TO_DATE('2000/01/01', 'yyyy/mm/dd'), '62 Sachs Center', 'Knoxville', 'TN', '4032217278', 5);
+
 
 
 
